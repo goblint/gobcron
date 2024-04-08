@@ -1,0 +1,37 @@
+{
+    "server": {
+        "name": "server01.pl.cit.tum.de",
+        "user": "goblint",
+        "threads": "44",
+        "memory": "64"
+    },
+    "zulip": {
+        "bot": {
+            "email": "xxx@xxx.zulipchat.com",
+            "apikey": "xxx"
+        },
+        "user": {
+            "Karoliine": "517812",
+            "Simmo": "517778",
+            "Vesal": "517773",
+            "Sarah": "517790",
+            "Julian": "517774",
+            "MichaelS": "517772",
+            "MichaelP": "652581"
+        },
+        "stream": "svcomp-nightly",
+        "mode": "stream"
+    },
+    "instance": {
+        "basedir": "/home/goblint/cron-job",
+        "svbenchdir": "/home/goblint/sv-benchmarks",
+        "gitrepo": "https://github.com/goblint/analyzer.git",
+        "branch": "master",
+        "benchconf": "svcomp24.conf",
+        "benchmark": "nightly.xml",
+        "historysize": "8",
+        "resultsdir": "results",
+        "commitsdir": "commits",
+        "analyzerdir": "analyzer"
+    }
+}
