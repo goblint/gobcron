@@ -1,6 +1,6 @@
 # Gobcron
 
-a process to regularly run a benchexec-based benchmark on a tool in order to asssess bugs to the efficiency of the tool in question. 
+a process to regularly run a [benchexec](https://github.com/sosy-lab/benchexec)-based [SV-COMP-benchmark](https://gitlab.com/sosy-lab/benchmarking/sv-benchmarks) on a tool in order to asssess bugs to the efficiency of the tool in question. 
 
 
 ## Installation
@@ -10,6 +10,8 @@ sudo apt install benchexec jq grep sed gawk git curl
 git clone https://github.com/DrMichaelPetter/gobcron.git
 cd gobcron
 ```
+
+in order to communicate the run information back to you, you should [add a bot to your zulip instance](https://zulip.com/help/add-a-bot-or-integration) and store bot-email and bot-apikey for later use in gobcron's configuration.
 
 ## Configuration
 ```bash
