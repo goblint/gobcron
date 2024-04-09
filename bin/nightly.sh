@@ -72,7 +72,13 @@ cat "$basedir/conf/nightly-template.xml" | sed "s#SVBENCHMARKPREFIX#$(conf "inst
 # perform the actual benchmark
 source "$basedir/pyenv/bin/activate"
 cd "$basedir/$(conf "instance.analyzerdir")"
-benchexec --read-only-dir / --overlay-dir . --overlay-dir /home --outputpath "$basedir/$(conf "instance.resultsdir")/current" --numOfThreads "$(conf "server.threads")" "$basedir/nightly.xml"
+benchexec --read-only-dir / --overlay-dir . --overlay-dir /home --outputpath "$basedir/$(conf "instance.resultsdir")/current" \
+    --memoryLimits  "$(conf "server.memory")" \
+    --numOfThreads  "$(conf "server.threads")" \
+    --timelimit     "$(conf "instance.timelimit")" \
+    --walltimelimit "$(conf "instance.walltimelimit")" \
+    "$basedir/nightly.xml"
+
 rm -f "$basedir/nightly.xml"
 cd -
 deactivate

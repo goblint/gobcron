@@ -14,10 +14,12 @@ cd gobcron
 in order to communicate the run information back to you, you should [add a bot to your zulip instance](https://zulip.com/help/add-a-bot-or-integration) and store bot-email and bot-apikey for later use in gobcron's configuration.
 
 ## Configuration
+
+You need to create a reasonable initial ```conf/gobcron.user.json``` file after installation. You can do that manually via copy/modify ```conf/gobcron.json``` or call the semi-interactive
 ```bash
-cp conf/gobcron.json conf/gobcron.user.json
+$gobcrondirectory/bin/init.sh
 ```
-and modify ```conf/gobcron.user.json``` to your liking. You can safely remove all non-edited properties, as they are filled with the default-values from the original file.
+and review ```conf/gobcron.user.json``` to your. All non-mentioned properties, are sourced default-values from the original ```conf/gobcron.json``` file.
 
 ### Example Use Cases
 - to set up a nightly run on the mainline analyzer, use a config like:
@@ -50,7 +52,7 @@ and modify ```conf/gobcron.user.json``` to your liking. You can safely remove al
         "name": "laptop",
         "user": "huber",
         "threads": "20",
-        "memory": "2GB"
+        "memory": "1GB"
     },
     "zulip": {
         "bot": {
@@ -63,7 +65,8 @@ and modify ```conf/gobcron.user.json``` to your liking. You can safely remove al
         "basedir": "/home/huber/gobcron",
         "svbenchdir": "/home/huber/sv-benchmarks",
         "gitrepo": "https://github.com/huber4711/analyzer.git",
-        "branch": "widening-experiment"
+        "branch": "widening-experiment",
+        "tag": "hubers-widening"
     }
 }
 ```

@@ -3,7 +3,7 @@
         "name": "server01.pl.cit.tum.de",
         "user": "goblint",
         "threads": "44",
-        "memory": "64"
+        "memory": "2GB"
     },
     "zulip": {
         "bot": {
@@ -27,8 +27,11 @@
         "svbenchdir": "/home/goblint/sv-benchmarks",
         "gitrepo": "https://github.com/goblint/analyzer.git",
         "branch": "master",
+        "tag": "nightly",
         "benchconf": "svcomp24.conf",
         "benchmark": "nightly.xml",
+        "timelimit": "300",
+        "walltimelimit": "360",
         "historysize": "8",
         "resultsdir": "results",
         "commitsdir": "commits",

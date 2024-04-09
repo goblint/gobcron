@@ -60,11 +60,13 @@ rotate () {
     local current; current=$(currentversion )
     local historysize; historysize=$(conf "instance.historysize")
     local analyzerdir; analyzerdir=$(conf "instance.analyzerdir")
+    local tag; tag=$(conf "instance.tag")
     rm -rf "$base/$resultsdir/old.$historysize"
     seq 1  "$((historysize-1))" | tac | xargs -n1 bash -c 'mv '"$base/$resultsdir"'/old.$0 '"$base/$resultsdir"'/old.$(($0+1))'
     mv     "$base/$resultsdir/current" "$base/$resultsdir/old.1"
     mkdir  "$base/$resultsdir/current"
     echo   "$localver" > "$base/$resultsdir/current/commithash"
+    echo   "$tag" > "$base/$resultsdir/current/tag"
     date +%Y%m%d-%H%M > "$base/$resultsdir/current/date"
     git -C "$base/$analyzerdir" log --oneline "$current".."$localver" > "$base/$resultsdir/current/lastchanges"
 }
@@ -76,7 +78,7 @@ symlinks () {
     local resultsdir; resultsdir=$(conf "instance.resultsdir")
     rm -rf "$base/$commitsdir"
     mkdir "$base/$commitsdir"
-    ls "$base/$resultsdir"/*/commithash | xargs -n1 bash -c 'ln -s $(dirname $0) '"$base/$commitsdir"'/$(cat $(dirname $0)/date)--$(cat $0)'
+    ls "$base/$resultsdir"/*/commithash | xargs -n1 bash -c 'ln -s $(dirname $0) '"$base/$commitsdir"'/$(cat $(dirname $0)/date)--$(cat $0)-$(cat $(dirname $0)/tag)'
 }
 
 # create difftables and result table
