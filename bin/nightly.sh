@@ -33,12 +33,9 @@ zulip () {
     fi
 }
 
-zulipmessage "$(conf zulip.user.MichaelP)" "cron job started: localhash: $localhash ; upstreamhash: $upstreamhash"
-
 # skip if there are no new commits
 if [ "$localhash" == "$upstreamhash" ] && [ "$FORCERUN" != "true" ]; then
     echo "no changes in repository since last time, skipping!";
-    zulipmessage "$(conf zulip.user.MichaelP)" "current version $localhash is still up-to-date, GitHub version is $upstreamhash so we are skipping nightly"
     exit 1 ;
 fi
 
@@ -49,7 +46,6 @@ compile
 goblintjobs=$(ps -eadf| grep "./goblint " | wc -l)
 if [ "$goblintjobs" -gt "1" ]  && [ "$FORCERUN" != "true" ]; then
     echo "goblint is already running, skipping!";
-    zulipmessage "$(conf zulip.user.MichaelP)" "GitHub $upstreamhash is newer as $localhash, but we found more than one goblintjob running"
     exit 1;
 fi
 
@@ -72,7 +68,8 @@ cat "$basedir/conf/nightly-template.xml" | sed "s#SVBENCHMARKPREFIX#$(conf "inst
 # perform the actual benchmark
 source "$basedir/pyenv/bin/activate"
 cd "$basedir/$(conf "instance.analyzerdir")"
-benchexec --read-only-dir / --overlay-dir . --overlay-dir /home --outputpath "$basedir/$(conf "instance.resultsdir")/current" \
+benchexec --read-only-dir / --overlay-dir . --overlay-dir /home \
+    --outputpath "$basedir/$(conf "instance.resultsdir")/current/" \
     --memorylimit  "$(conf "server.memory")" \
     --numOfThreads  "$(conf "server.threads")" \
     --timelimit     "$(conf "instance.timelimit")" \
