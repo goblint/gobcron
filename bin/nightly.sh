@@ -15,6 +15,7 @@ shopt -s extglob
 basedir="$(conf "instance.basedir")"
 cd "$basedir"
 benchstarttime=$(date +%H:%M)
+benchstartseconds=$(date +%s)
 
 #from library.sh
 localhash=$(currentversion)
@@ -88,7 +89,11 @@ acc="$(cat "$acc")"
 #from library.sh
 runinfo rundata
 
-zulip "sv-comp run for commit ${upstreamhash:0:7} terminated at $(date +%H:%M)"
+benchstartseconds=$((($(date +%s)-$benchstartseconds)))
+benchmarkhours=$((benchstartseconds/3600))
+benchmarkminutes=$(printf "%02d"$((benchstartseconds/60%60)))
+
+zulip "sv-comp run for commit ${upstreamhash:0:7} terminated at $(date +%H:%M) after $benchmarkhours:$benchmarkminutes minutes."
 zulip "$rundata"
 zulip "$acc"
 

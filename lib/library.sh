@@ -139,14 +139,17 @@ function difftables () {
 # parameters: $1=accumulator
 function commitinfo () {
     local base; base="$(conf "instance.basedir")"
+    local resultsdir; resultsdir=$(conf "instance.resultsdir")
+    local analyzerdir; analyzerdir=$(conf "instance.analyzerdir")
     local -n output=$1
+    if [ ! -f "$base/$resultsdir/old.1/commithash" ]; then return; fi
     output="| commit | comment
 |---|---"
-    local current; current="$(cat "$base"/results/current/commithash)";
-    local old; old="$(cat "$base"/results/old.1/commithash)";
+    local current; current="$(cat "$base/$resultsdir"/current/commithash)";
+    local old; old="$(cat "$base/$resultsdir"/old.1/commithash)";
     local IFS; IFS=$'\n'
-    echo "git -C $base/analyzer log $old..$current --oneline --merges --invert-grep --grep \"'master' into\""
-    local merges; merges=($(git -C "$base/analyzer" log "$old".."$current" --oneline --merges --invert-grep --grep "'master' into"))
+    echo "git -C $base/$analyzerdir log $old..$current --oneline --merges --invert-grep --grep \"'master' into\""
+    local merges; merges=($(git -C "$base/$analyzerdir" log "$old".."$current" --oneline --merges --invert-grep --grep "'master' into"))
     for i in "${merges[@]}"; do
 	local id; id="${i:0:7}"
 	local message; message=$(echo "$i" | awk '{ $1=""; print $0 }')
@@ -170,7 +173,7 @@ function runinfo() {
     local time; time=$(cat "$base/$resultsdir/current/$benchmarkname"*.txt| head -n 30 | grep "time:" | awk '{ $1=""; $2=""; print $0 }')
     local revision; revision=$(cat "$base/$resultsdir/current/commithash")
     local date; date=$(cat "$base/$resultsdir/current/date")
-    local path; path="sftp://$server$base/$(conf "instance.commitsdir")/$date--$revision"
+    local path; path="sftp://$server$base/$(conf "instance.commitsdir")/$date--$revision-$(cat "$base/$resultsdir/current/tag")"
     
     output="|SV-Comp config | value
 |---|---
