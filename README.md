@@ -19,7 +19,7 @@ You need to create a reasonable initial ```conf/gobcron.user.json``` file after 
 ```bash
 $gobcrondirectory/bin/init.sh
 ```
-and review ```conf/gobcron.user.json``` to your. All non-mentioned properties, are sourced default-values from the original ```conf/gobcron.json``` file.
+and review/modify ```conf/gobcron.user.json``` to your satisfaction. All non-mentioned properties, are sourced default-values from the original ```conf/gobcron.json``` file.
 
 ### Example Use Cases
 - to set up a nightly run on the mainline analyzer, use a config like:
