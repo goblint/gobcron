@@ -61,6 +61,7 @@ rotate () {
     local historysize; historysize=$(conf "instance.historysize")
     local analyzerdir; analyzerdir=$(conf "instance.analyzerdir")
     local tag; tag=$(conf "instance.tag")
+    mkdir -p "$base/$resultsdir"
     rm -rf "$base/$resultsdir/old.$historysize"
     seq 1  "$((historysize-1))" | tac | xargs -n1 bash -c 'mv '"$base/$resultsdir"'/old.$0 '"$base/$resultsdir"'/old.$(($0+1))'
     mv     "$base/$resultsdir/current" "$base/$resultsdir/old.1"

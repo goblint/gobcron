@@ -20,7 +20,7 @@ init () {
     value=$(($(lscpu | grep "^CPU(s):" | awk '{ print $2 }') - 1))
     acc=$(jq '.server.threads|="'$value'"' <<< "$acc")
     value=$(($(lsmem | grep "^Total online memory:" | awk '{ print $4 }' | head -c -2) / ($value + 1)))
-    acc=$(jq '.server.memory|="'$value'G"' <<< "$acc")
+    acc=$(jq '.server.memory|="'$value'GB"' <<< "$acc")
     read -p "Enter the path to the SV-benchmark directory [enter defaults to $HOME/sv-benchmarks]: " value
     value=${value:-"$(realpath "$HOME/sv-benchmarks")"}
     acc=$(jq '.instance.svbenchdir|="'$value'"' <<< "$acc")
