@@ -35,6 +35,7 @@
         "historysize": "8",
         "resultsdir": "results",
         "commitsdir": "commits",
-        "analyzerdir": "analyzer"
+        "analyzerdir": "analyzer",
+        "compareto": "old.1"
     }
 }

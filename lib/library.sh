@@ -30,7 +30,7 @@ repoversion () {
 oldversion () {
     local base; base="$(conf "instance.basedir")"
     local resultsdir; resultsdir="$(conf "instance.resultsdir")"
-    cat "$base/$resultsdir/old.1/commithash"
+    cat "$base/$resultsdir/$(conf "instance.compareto")/commithash"
 }
 
 currentversion () {
@@ -89,7 +89,8 @@ function difftables () {
     local resultsdir; resultsdir=$(conf "instance.resultsdir")
     local -n accu=$1
     local current; current="$(cat "$base/$resultsdir"/current/commithash)";
-    local old; old="$(cat "$base/$resultsdir"/old.1/commithash)";
+    local olddir; olddir="$(conf "instance.compareto")"
+    local old; old="$(cat "$base/$resultsdir/$olddir"/commithash)";
     local gobcron; gobcron=$(mktemp -t gobcronXXXX)
     local benchmarkname; benchmarkname=$(conf "instance.benchmark" | xargs -n1 basename -s .xml)
     echo "diffing commit $current with old $old"
@@ -112,7 +113,7 @@ function difftables () {
 	local oldscore=0 ;
 	local diff=0 ;
 	currentscore=$(cat "$base/$resultsdir/current/diff2previous"/*"$taskgroup"-current*.statistics.tex | grep -o Score\}.* | sed 's/Score}{\(.*\)}%/\1/')
-	local compareto; compareto=$(ls "$base/$resultsdir"/old.1/*"$taskgroup".xml.bz2)
+	local compareto; compareto=$(ls "$base/$resultsdir/$olddir"/*"$taskgroup".xml.bz2)
 	if [ -f "$compareto" ]; then
 	    source "$base/pyenv/bin/activate"
 	    table-generator -q -n "$taskgroup" -o "$base/$resultsdir/current/diff2previous" "$file" "$compareto"
@@ -142,11 +143,11 @@ function commitinfo () {
     local resultsdir; resultsdir=$(conf "instance.resultsdir")
     local analyzerdir; analyzerdir=$(conf "instance.analyzerdir")
     local -n output=$1
-    if [ ! -f "$base/$resultsdir/old.1/commithash" ]; then return; fi
+    if [ ! -f "$base/$resultsdir/$(conf "instance.compareto")/commithash" ]; then return; fi
     output="| commit | comment
 |---|---"
     local current; current="$(cat "$base/$resultsdir"/current/commithash)";
-    local old; old="$(cat "$base/$resultsdir"/old.1/commithash)";
+    local old; old="$(cat "$base/$resultsdir/$(conf "instance.compareto")"/commithash)";
     local IFS; IFS=$'\n'
     echo "git -C $base/$analyzerdir log $old..$current --oneline --merges --invert-grep --grep \"'master' into\""
     local merges; merges=($(git -C "$base/$analyzerdir" log "$old".."$current" --oneline --merges --invert-grep --grep "'master' into"))
