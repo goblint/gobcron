@@ -2,6 +2,16 @@
 
 SCRIPTDIR="$(dirname "$(realpath "${BASH_SOURCE[0]}")")"
 
+
+printf "checking programs... "
+list="jq awk curl date sed git make xargs benchexec"
+for prog in $list; do
+  command -v $prog >/dev/null 2>&1 && continue || echo -e "\E[31m\033[1m program $prog required but not installed\033[0m"
+  exit 1
+done
+echo -e '\E[32m'"\033[1m[ok]\033[0m"
+
+
 # build the minimal gobcron.user.json
 init () {
     local acc
