@@ -9,7 +9,8 @@ fi
 
 function initconf () {
     local base=$1
-    GOBCRON_CONFIG=$(jq '.[0] * .[1]' -s "$base"/conf/gobcron.json "$base"/conf/gobcron.user.json | jq .)
+    if [ ! -f "$base"/conf/gobcron.user.json ] ; then touch "$base"/conf/gobcron.user.json ; fi
+    GOBCRON_CONFIG=$(jq '.[0] * .[1]' -s <(json5 "$base"/conf/gobcron.json) <(json5 "$base"/conf/gobcron.user.json) | jq .)
 }
 
 # conf echoes the query value $1=query

@@ -1,15 +1,21 @@
 {
+    // server section 
+    //   keeps configuration which is particular to the concrete hw of the server
     "server": {
         "name": "server01.pl.cit.tum.de",
         "user": "goblint",
         "threads": "44",
         "memory": "2GB"
     },
+    // zulip section
+    //   keeps configuration which is particular to the communication with goblint's zulip server
     "zulip": {
+        // for zulip communication, this is absolutely necessary
         "bot": {
-            "email": "xxx@xxx.zulipchat.com",
+            "email": "xxx@goblint.zulipchat.com",
             "apikey": "xxx"
         },
+        // for convenience, we define the most prominent user ids here
         "user": {
             "Karoliine": "517812",
             "Simmo": "517778",
@@ -19,23 +25,35 @@
             "MichaelS": "517772",
             "MichaelP": "652581"
         },
-        "stream": "svcomp-nightly",
-        "mode": "stream"
+        // mode is either "stream" or some concrete User id as e.g. in the user section
+        "mode": "stream",
+        // definining the name of the stream, that gobcron posts its messages to in stream mode
+        "stream": "svcomp-nightly"
     },
+    // instance section 
+    //   keeps configuration which is particular to the concrete sequence of benchmark
     "instance": {
+        // configure the directory, where the gobcron project is located:
         "basedir": "/home/goblint/cron-job",
+        // configure the directory, where the sv-benchmarks are located:
         "svbenchdir": "/home/goblint/sv-benchmarks",
+        // configure your preferred github URL to be benchmarked with gitrepo and branch
         "gitrepo": "https://github.com/goblint/analyzer.git",
         "branch": "master",
+        // tag is stored in the results directory and appears in the commits/ folder naming scheme
         "tag": "nightly",
-        "benchconf": "svcomp24.conf",
-        "benchmark": "nightly.xml",
+        // compareto is the tag of the previous benchmark run, which is used to compare the results; relative to the 'instance.resultsdir' directory
+        "compareto": "old.1",
+        // run parameters:
         "timelimit": "300",
         "walltimelimit": "360",
         "historysize": "8",
+        // configure subdirectories (if you really insist):
         "resultsdir": "results",
         "commitsdir": "commits",
         "analyzerdir": "analyzer",
-        "compareto": "old.1"
+        // currently not used:
+        "benchconf": "svcomp24.conf",
+        "benchmark": "nightly.xml"
     }
 }

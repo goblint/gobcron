@@ -4,7 +4,7 @@ SCRIPTDIR="$(dirname "$(realpath "${BASH_SOURCE[0]}")")"
 
 
 printf "checking programs... "
-list="jq awk curl date sed git make xargs benchexec"
+list="jq awk curl date sed git make xargs benchexec json5"
 for prog in $list; do
   command -v $prog >/dev/null 2>&1 && continue || echo -e "\E[31m\033[1m program $prog required but not installed\033[0m"
   exit 1

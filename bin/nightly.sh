@@ -59,7 +59,7 @@ symlinks
 #from library.sh
 commitinfo out
 
-zulip "$(conf server.user)@$(conf server.name) started a nightly sv-comp run for commit $upstreamhash [differing from $localhash](https://github.com/goblint/analyzer/compare/$localhash...$upstreamhash) at $benchstarttime."
+zulip "$(conf server.user)@$(conf server.name) started a $(conf instance.tag) sv-comp run for commit $upstreamhash [differing from $localhash](https://github.com/goblint/analyzer/compare/$localhash...$upstreamhash) at $benchstarttime."
 zulip "$out"
 
 # relocate goblint-nightly.template.xml to the correct folder on this server
