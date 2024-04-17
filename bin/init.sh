@@ -42,7 +42,7 @@ init () {
         acc=$(jq '.zulip.mode|='$uid <<< "$acc")
         break
     done
-    echo "Now, let us connect to zulip, open https://zulip.com/help/add-a-bot-or-integration"
+    echo "Now, let us connect to zulip, open https://goblint.zulipchat.com/#settings/your-bots"
     read -p "Enter the zulip bot email: " value
     acc=$(jq '.zulip.bot.email|="'$value'"' <<< "$acc")
     read -p "Enter the zulip bot apikey: " value

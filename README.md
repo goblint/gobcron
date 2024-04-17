@@ -11,7 +11,7 @@ git clone https://github.com/DrMichaelPetter/gobcron.git
 cd gobcron
 ```
 
-in order to communicate the run information back to you, you should [add a bot to your zulip instance](https://zulip.com/help/add-a-bot-or-integration) and store bot-email and bot-apikey for later use in gobcron's configuration.
+in order to communicate the run information back to you, you should [add a bot to your zulip instance](https://goblint.zulipchat.com/#settings/your-bots) and store bot-email and bot-apikey for later use in gobcron's configuration.
 
 ## Configuration
 
