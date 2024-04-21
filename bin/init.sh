@@ -34,11 +34,11 @@ init () {
     read -p "Enter the path to the SV-benchmark directory [enter defaults to $HOME/sv-benchmarks]: " value
     value=${value:-"$(realpath "$HOME/sv-benchmarks")"}
     acc=$(jq '.instance.svbenchdir|="'$value'"' <<< "$acc")
-    value=$(jq '.zulip.user | keys | join(" ")' $confdir/gobcron.json | sed -e 's/^"//' -e 's/"$//')
+    value=$(jq '.zulip.user | keys | join(" ")' <(json5 $confdir/gobcron.json) | sed -e 's/^"//' -e 's/"$//')
     local PS3="Select the number of the user you want to message: "
     select uid in $value;
     do
-        uid=$(jq '.zulip.user.'$uid $confdir/gobcron.json)
+        uid=$(jq '.zulip.user.'$uid <(json5 $confdir/gobcron.json))
         acc=$(jq '.zulip.mode|='$uid <<< "$acc")
         break
     done
