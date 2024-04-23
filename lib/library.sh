@@ -95,8 +95,8 @@ function difftables () {
     local benchmarkname; benchmarkname=$(conf "instance.benchmark" | xargs -n1 basename -s .xml)
     echo "diffing commit $current with old $old"
     accu="$gobcron"
-    echo "| Task | last: $old | current: $current | :red_triangle_up: score | difftable" > "$gobcron"
-    echo "|---|---|---|---|---" >> "$gobcron"
+    echo "| Task | last: $old | current: $current | :red_triangle_up: score | difftable | :hourglass: runtime" > "$gobcron"
+    echo "|---|---|---|---|---|---" >> "$gobcron"
     echo "usingtmp file $gobcron"
     #retrieve taskgroups
     declare -a runsets=($(cat "$base/$resultsdir/current/$benchmarkname"*.txt| head -n 30 | grep "run sets:" | awk '{ $1=""; $2=""; print $0 }' | tr "," " "))
@@ -113,6 +113,11 @@ function difftables () {
 	local oldscore=0 ;
 	local diff=0 ;
 	currentscore=$(cat "$base/$resultsdir/current/diff2previous"/*"$taskgroup"-current*.statistics.tex | grep -o Score\}.* | sed 's/Score}{\(.*\)}%/\1/')
+    local currentruntime=0;
+    currentruntime=$(cat "$base/$resultsdir/current/diff2previous"/*"$taskgroup"-current*.statistics.tex | grep -o Cputime\}\{All\}\{\}\{Sum\}\{.* | sed 's/Cputime}{All}{}{Sum}{\(.*\)\..*}%/\1/')
+    local prettyruntime=0;
+    prettyruntime=$(printf "%03dh %02dm %02ds" $((currentruntime/3600)) $((currentruntime%3600/60)) $((currentruntime%60)))
+    # prettyruntime=$(printf "%02dh %02dm %02ds (%d seconds)" $((currentruntime/3600)) $((currentruntime%3600/60)) $((currentruntime%60)) $currentruntime)
 	local compareto; compareto=$(ls "$base/$resultsdir/$olddir"/*"$taskgroup".xml.bz2)
 	if [ -f "$compareto" ]; then
 	    source "$base/pyenv/bin/activate"
@@ -120,17 +125,19 @@ function difftables () {
 	    table-generator -q -n "$taskgroup-old"     -f statistics-tex -o "$base/$resultsdir/current/diff2previous" "$compareto"
 	    deactivate
 	    oldscore=$(cat "$base/$resultsdir/current/diff2previous"/*"$taskgroup-old"*.statistics.tex | grep -o Score\}.* | sed 's/Score}{\(.*\)}%/\1/')
+        oldruntime=$(cat "$base/$resultsdir/current/diff2previous"/*"$taskgroup"-old*.statistics.tex | grep -o Cputime\}\{All\}\{\}\{Sum\}\{.* | sed 's/Cputime}{All}{}{Sum}{\(.*\)\..*}%/\1/')
 	    ((currentscore)) || currentscore=0
 	    ((oldscore)) || oldscore=0
 	    diff="$((currentscore-oldscore))"
+        prettyruntime="$prettyruntime  (:red_triangle_up: $(printf "%+d" $((currentruntime-oldruntime))) s)"
 	fi
 	local line="";
 	local difftablesize=0;
 	difftablesize=$(cat "$base/$resultsdir/current/diff2previous"/"$taskgroup".diff.csv | tail -n +4 | wc -l)
 	echo "scores: $currentscore vs $oldscore"
-	[[ "$currentscore" -gt "$oldscore" ]] && line="| $taskgroup | $oldscore | $currentscore | :check: (+ $diff)   | $difftablesize" ;
-	[[ "$currentscore" -eq "$oldscore" ]] && line="| $taskgroup | $oldscore | $currentscore | :check_mark: (+/- 0) | $difftablesize" ;
-	[[ "$currentscore" -lt "$oldscore" ]] && line="| $taskgroup | $oldscore | $currentscore | :warning: (- $diff) | $difftablesize" ;
+	[[ "$currentscore" -gt "$oldscore" ]] && line="| $taskgroup | $oldscore | $currentscore | :trophy: (+ $diff)   | $difftablesize | $prettyruntime" ;
+	[[ "$currentscore" -eq "$oldscore" ]] && line="| $taskgroup | $oldscore | $currentscore | :check_mark: ( +/-0) | $difftablesize | $prettyruntime" ;
+	[[ "$currentscore" -lt "$oldscore" ]] && line="| $taskgroup | $oldscore | $currentscore | :warning: ( $diff) | $difftablesize | $prettyruntime" ;
 	echo "$line" >> "$gobcron"
     done
     rm -f "$base/$resultsdir"/current/diff2previous/*.tex
