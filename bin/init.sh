@@ -12,6 +12,14 @@ done
 echo -e '\E[32m'"\033[1m[ok]\033[0m"
 
 
+printf "checking libraries... "
+list="gcc-multilib"
+for lib in $list; do
+  dpkg -s "$lib" 2>/dev/null 1>/dev/null && continue || echo -e "\E[31m\033[1m library $lib required but not installed\033[0m"
+  exit 1
+done
+echo -e '\E[32m'"\033[1m[ok]\033[0m"
+
 # build the minimal gobcron.user.json
 init () {
     local acc
