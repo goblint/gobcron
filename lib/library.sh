@@ -105,10 +105,8 @@ function difftables () {
 	echo "trying  with taskgroup $taskgroup"
 	local file; file=$(ls "$base/$resultsdir"/current/*"$taskgroup".xml.bz2) 
 	if [ ! -f "$file" ]; then continue; fi
-	source "$base/pyenv/bin/activate"
 	table-generator -q -n "$taskgroup" -o "$base/$resultsdir/current/diff2previous" "$file"
 	table-generator -q -n "$taskgroup"-current -f statistics-tex -o "$base/$resultsdir/current/diff2previous" "$file"
-	deactivate
 	local currentscore=0 ;
 	local oldscore=0 ;
 	local diff=0 ;
@@ -120,10 +118,8 @@ function difftables () {
     # prettyruntime=$(printf "%02dh %02dm %02ds (%d seconds)" $((currentruntime/3600)) $((currentruntime%3600/60)) $((currentruntime%60)) $currentruntime)
 	local compareto; compareto=$(ls "$base/$resultsdir/$olddir"/*"$taskgroup".xml.bz2)
 	if [ -f "$compareto" ]; then
-	    source "$base/pyenv/bin/activate"
 	    table-generator -q -n "$taskgroup" -o "$base/$resultsdir/current/diff2previous" "$file" "$compareto"
 	    table-generator -q -n "$taskgroup-old"     -f statistics-tex -o "$base/$resultsdir/current/diff2previous" "$compareto"
-	    deactivate
 	    oldscore=$(cat "$base/$resultsdir/current/diff2previous"/*"$taskgroup-old"*.statistics.tex | grep -o Score\}.* | sed 's/Score}{\(.*\)}%/\1/')
         oldruntime=$(cat "$base/$resultsdir/current/diff2previous"/*"$taskgroup"-old*.statistics.tex | grep -o Cputime\}\{All\}\{\}\{Sum\}\{.* | sed 's/Cputime}{All}{}{Sum}{\(.*\)\..*}%/\1/')
 	    ((currentscore)) || currentscore=0

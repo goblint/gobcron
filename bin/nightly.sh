@@ -67,7 +67,6 @@ rm -f "$basedir/nightly.xml"
 cat "$basedir/conf/nightly-template.xml" | sed "s#SVBENCHMARKPREFIX#$(conf "instance.svbenchdir")#" > "$basedir/nightly.xml"
 
 # perform the actual benchmark
-source "$basedir/pyenv/bin/activate"
 cd "$basedir/$(conf "instance.analyzerdir")"
 benchexec --read-only-dir / --overlay-dir . --overlay-dir /home \
     --outputpath "$basedir/$(conf "instance.resultsdir")/current/" \
@@ -79,7 +78,6 @@ benchexec --read-only-dir / --overlay-dir . --overlay-dir /home \
 
 rm -f "$basedir/nightly.xml"
 cd -
-deactivate
 
 # compare the result to the previous one
 #from library.sh
