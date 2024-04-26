@@ -13,6 +13,14 @@ function initconf () {
     GOBCRON_CONFIG=$(jq '.[0] * .[1]' -s <(json5 "$base"/conf/gobcron.json) <(json5 "$base"/conf/gobcron.user.json) | jq .)
 }
 
+# update the config for this bash session (lifetime of variables)
+function updateconf {
+    local param=$1
+    local value=$(cut -d "=" -f 2 <<< "$param")
+    local key=$(cut -d "=" -f 1 <<< "$param")
+    GOBCRON_CONFIG=$(jq ".$key=\"$value\"" <<< "$GOBCRON_CONFIG")
+}
+
 # conf echoes the query value $1=query
 function conf () {
     [[ -z "$GOBCRON_CONFIG" ]] && echo "Error: GOBCRON_CONFIG is not initialized -- call initconf [basedir]" && return 1
