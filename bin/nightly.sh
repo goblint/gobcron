@@ -17,11 +17,15 @@ cd "$basedir"
 benchstarttime=$(date +%H:%M)
 benchstartseconds=$(date +%s)
 
+DEBUG echo "basedir is: $basedir"
+
 #from library.sh
 localhash=$(currentversion)
 
 #from library.sh
 upstreamhash=$(repoversion)
+
+DEBUG echo "localhash: $localhash, upstreamhash: $upstreamhash"
 
 zulip () {
     local message; message="$1"
@@ -79,9 +83,11 @@ benchexec --read-only-dir / --overlay-dir . --overlay-dir /home \
 rm -f "$basedir/nightly.xml"
 cd -
 
-# compare the result to the previous one
+# compare the result to the previous one/ compareto
 #from library.sh
-difftables acc
+compareresults acc \
+    "$basedir/$(conf "instance.resultsdir")/current" \
+    "$basedir/$(conf "instance.resultsdir")/$(conf "instance.compareto")"
 acc="$(cat "$acc")"
 
 #from library.sh

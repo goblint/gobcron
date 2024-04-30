@@ -5,6 +5,10 @@ if [ "${BASH_SOURCE-}" = "$0" ]; then
     exit 33
 fi
 
+function DEBUG () {
+    [ "$_DEBUG" == "on" ] &&  "$@"
+}
+
 [ -n "${GOBCRON_ZULIP}" ] && return; GOBCRON_ZULIP=0; # pragma once
 
 # send a message to our zulip chat; parameters: $1=receiver $2=message
@@ -16,6 +20,7 @@ zulipmessage () {
     --data-urlencode type=direct \
     --data-urlencode "to=[$receiver]" \
     --data-urlencode "content=$message"
+    DEBUG echo "zulipmessage to $receiver: $message"
 }
 
 # send a message to our zulip chat; parameters: $1=receiver $2=topic $3=message
@@ -29,6 +34,7 @@ zulipstream () {
     --data-urlencode "to=$streamname" \
     --data-urlencode "topic=$topic" \
     --data-urlencode "content=$message"
+    DEBUG echo "zulipstream to $streamname: $message"
 }
 
 # message with zulipmessage "$ZULIP_MichaelP" "SV-Comp nightly script started." ;

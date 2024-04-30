@@ -1,16 +1,21 @@
 #!/bin/bash
 
 if [ "${BASH_SOURCE-}" = "$0" ]; then
-    echo "You must source this script: \$ source $0" >&2
+    echo "You must source this script via: \$ source $0" >&2
     exit 33
 fi
 
 [ -n "${GOBCRON_CONF}" ] && return; GOBCRON_CONF=0; # pragma once
 
+function DEBUG () {
+    [ "$_DEBUG" == "on" ] &&  "$@"
+}
+
 function initconf () {
     local base=$1
     if [ ! -f "$base"/conf/gobcron.user.json ] ; then touch "$base"/conf/gobcron.user.json ; fi
     GOBCRON_CONFIG=$(jq '.[0] * .[1]' -s <(json5 "$base"/conf/gobcron.json) <(json5 "$base"/conf/gobcron.user.json) | jq .)
+    DEBUG echo "GOBCRON_CONFIG: $GOBCRON_CONFIG"
 }
 
 # update the config for this bash session (lifetime of variables)

@@ -1,7 +1,7 @@
 #!/bin/bash
 
 if [ "${BASH_SOURCE-}" = "$0" ]; then
-    echo "You must source this script: \$ source $0" >&2
+    echo "You must source this script via: \$ source $0" >&2
     exit 33
 fi
 
@@ -12,6 +12,10 @@ source "$SCRIPTDIR/conf.sh"
 source "$SCRIPTDIR/zulip.sh"
 
 initconf "$SCRIPTDIR/.."
+
+function DEBUG () {
+    [ "$_DEBUG" == "on" ] &&  "$@"
+}
 
 localversion () {
     local base; base="$(conf "instance.basedir")"
@@ -82,46 +86,47 @@ symlinks () {
     ls "$base/$resultsdir"/*/commithash | xargs -n1 bash -c 'ln -s $(dirname $0) '"$base/$commitsdir"'/$(cat $(dirname $0)/date)--$(cat $0)-$(cat $(dirname $0)/tag)'
 }
 
-# create difftables and result table
-# parameters: $1=accumulator
-function difftables () {
-    local base; base="$(conf "instance.basedir")"
-    local resultsdir; resultsdir=$(conf "instance.resultsdir")
+# compare two result folders and create a comparison table
+# parameters: $1=accumulator , $2=comparisondir1 , $3=comparisondir2
+function compareresults () {
     local -n accu=$1
-    local current; current="$(cat "$base/$resultsdir"/current/commithash)";
-    local olddir; olddir="$(conf "instance.compareto")"
-    local old; old="$(cat "$base/$resultsdir/$olddir"/commithash)";
+    local comparison1;
+    local comparison2;
+    comparison1="$2"
+    comparison2="$3"
+    local current; current="$(cat "$comparison1"/commithash)";
+    local old; old="$(cat "$comparison2"/commithash)";
     local gobcron; gobcron=$(mktemp -t gobcronXXXX)
     local benchmarkname; benchmarkname=$(conf "instance.benchmark" | xargs -n1 basename -s .xml)
-    echo "diffing commit $current with old $old"
+    DEBUG echo "diffing commit $current with old $old"
     accu="$gobcron"
     echo "| Task | last: $old | current: $current | :red_triangle_up: score | difftable | :hourglass: runtime" > "$gobcron"
     echo "|---|---|---|---|---|---" >> "$gobcron"
-    echo "usingtmp file $gobcron"
+    DEBUG echo "using tmp file $gobcron"
     #retrieve taskgroups
-    declare -a runsets=($(cat "$base/$resultsdir/current/$benchmarkname"*.txt| head -n 30 | grep "run sets:" | awk '{ $1=""; $2=""; print $0 }' | tr "," " "))
+    declare -a runsets=($(cat "$comparison1/$benchmarkname"*.txt| head -n 30 | grep "run sets:" | awk '{ $1=""; $2=""; print $0 }' | tr "," " "))
     for taskgroup in "${runsets[@]}"
     do
-	echo "trying  with taskgroup $taskgroup"
-	local file; file=$(ls "$base/$resultsdir"/current/*"$taskgroup".xml.bz2) 
+	DEBUG echo "trying  with taskgroup $taskgroup"
+	local file; file=$(ls "$comparison1"/*"$taskgroup".xml.bz2)
 	if [ ! -f "$file" ]; then continue; fi
-	table-generator -q -n "$taskgroup" -o "$base/$resultsdir/current/diff2previous" "$file"
-	table-generator -q -n "$taskgroup"-current -f statistics-tex -o "$base/$resultsdir/current/diff2previous" "$file"
+	table-generator -q -n "$taskgroup" -o "$comparison1/diff2previous" "$file"
+	table-generator -q -n "$taskgroup"-current -f statistics-tex -o "$comparison1/diff2previous" "$file"
 	local currentscore=0 ;
 	local oldscore=0 ;
 	local diff=0 ;
-	currentscore=$(cat "$base/$resultsdir/current/diff2previous"/*"$taskgroup"-current*.statistics.tex | grep -o Score\}.* | sed 's/Score}{\(.*\)}%/\1/')
+	currentscore=$(cat "$comparison1/diff2previous"/*"$taskgroup"-current*.statistics.tex | grep -o Score\}.* | sed 's/Score}{\(.*\)}%/\1/')
     local currentruntime=0;
-    currentruntime=$(cat "$base/$resultsdir/current/diff2previous"/*"$taskgroup"-current*.statistics.tex | grep -o Cputime\}\{All\}\{\}\{Sum\}\{.* | sed 's/Cputime}{All}{}{Sum}{\(.*\)\..*}%/\1/')
+    currentruntime=$(cat "$comparison1/diff2previous"/*"$taskgroup"-current*.statistics.tex | grep -o Cputime\}\{All\}\{\}\{Sum\}\{.* | sed 's/Cputime}{All}{}{Sum}{\(.*\)\..*}%/\1/')
     local prettyruntime=0;
     prettyruntime=$(printf "%03dh %02dm %02ds" $((currentruntime/3600)) $((currentruntime%3600/60)) $((currentruntime%60)))
     # prettyruntime=$(printf "%02dh %02dm %02ds (%d seconds)" $((currentruntime/3600)) $((currentruntime%3600/60)) $((currentruntime%60)) $currentruntime)
-	local compareto; compareto=$(ls "$base/$resultsdir/$olddir"/*"$taskgroup".xml.bz2)
+	local compareto; compareto=$(ls "$comparison2"/*"$taskgroup".xml.bz2)
 	if [ -f "$compareto" ]; then
-	    table-generator -q -n "$taskgroup" -o "$base/$resultsdir/current/diff2previous" "$file" "$compareto"
-	    table-generator -q -n "$taskgroup-old"     -f statistics-tex -o "$base/$resultsdir/current/diff2previous" "$compareto"
-	    oldscore=$(cat "$base/$resultsdir/current/diff2previous"/*"$taskgroup-old"*.statistics.tex | grep -o Score\}.* | sed 's/Score}{\(.*\)}%/\1/')
-        oldruntime=$(cat "$base/$resultsdir/current/diff2previous"/*"$taskgroup"-old*.statistics.tex | grep -o Cputime\}\{All\}\{\}\{Sum\}\{.* | sed 's/Cputime}{All}{}{Sum}{\(.*\)\..*}%/\1/')
+	    table-generator -q -n "$taskgroup" -o "$comparison1/diff2previous" "$file" "$compareto"
+	    table-generator -q -n "$taskgroup-old"     -f statistics-tex -o "$comparison1/diff2previous" "$compareto"
+	    oldscore=$(cat "$comparison1/diff2previous"/*"$taskgroup-old"*.statistics.tex | grep -o Score\}.* | sed 's/Score}{\(.*\)}%/\1/')
+        oldruntime=$(cat "$comparison1/diff2previous"/*"$taskgroup"-old*.statistics.tex | grep -o Cputime\}\{All\}\{\}\{Sum\}\{.* | sed 's/Cputime}{All}{}{Sum}{\(.*\)\..*}%/\1/')
 	    ((currentscore)) || currentscore=0
 	    ((oldscore)) || oldscore=0
 	    diff="$((currentscore-oldscore))"
@@ -129,14 +134,14 @@ function difftables () {
 	fi
 	local line="";
 	local difftablesize=0;
-	difftablesize=$(cat "$base/$resultsdir/current/diff2previous"/"$taskgroup".diff.csv | tail -n +4 | wc -l)
-	echo "scores: $currentscore vs $oldscore"
+	difftablesize=$(cat "$comparison1/diff2previous"/"$taskgroup".diff.csv 2> /dev/null | tail -n +4 | wc -l)
+	DEBUG echo "scores: $currentscore vs $oldscore"
 	[[ "$currentscore" -gt "$oldscore" ]] && line="| $taskgroup | $oldscore | $currentscore | :trophy: (+ $diff)   | $difftablesize | $prettyruntime" ;
-	[[ "$currentscore" -eq "$oldscore" ]] && line="| $taskgroup | $oldscore | $currentscore | :check_mark: ( +/-0) | $difftablesize | $prettyruntime" ;
-	[[ "$currentscore" -lt "$oldscore" ]] && line="| $taskgroup | $oldscore | $currentscore | :warning: ( $diff) | $difftablesize | $prettyruntime" ;
+	[[ "$currentscore" -eq "$oldscore" ]] && line="| $taskgroup | $oldscore | $currentscore | :check_mark: (+/-0) | $difftablesize | $prettyruntime" ;
+	[[ "$currentscore" -lt "$oldscore" ]] && line="| $taskgroup | $oldscore | $currentscore | :warning: ($diff) | $difftablesize | $prettyruntime" ;
 	echo "$line" >> "$gobcron"
     done
-    rm -f "$base/$resultsdir"/current/diff2previous/*.tex
+    rm -f "$comparison1"/diff2previous/*.tex
 }
 
 # search git log for noteworthy merges
@@ -147,12 +152,12 @@ function commitinfo () {
     local analyzerdir; analyzerdir=$(conf "instance.analyzerdir")
     local -n output=$1
     if [ ! -f "$base/$resultsdir/$(conf "instance.compareto")/commithash" ]; then return; fi
-    output="| commit | comment
+    output="| commit | comment 
 |---|---"
     local current; current="$(cat "$base/$resultsdir"/current/commithash)";
     local old; old="$(cat "$base/$resultsdir/$(conf "instance.compareto")"/commithash)";
     local IFS; IFS=$'\n'
-    echo "git -C $base/$analyzerdir log $old..$current --oneline --merges --invert-grep --grep \"'master' into\""
+    DEBUG echo "git -C $base/$analyzerdir log $old..$current --oneline --merges --invert-grep --grep \"'master' into\""
     local merges; merges=($(git -C "$base/$analyzerdir" log "$old".."$current" --oneline --merges --invert-grep --grep "'master' into"))
     for i in "${merges[@]}"; do
 	local id; id="${i:0:7}"
