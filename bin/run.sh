@@ -14,7 +14,7 @@ SKIPREPORT="false"
 DISABLEZULIP="false"
 shopt -s extglob
 
-VALID_ARGS=$(getopt -o h --long help,skipreport,skipchangecheck,disablezulip -- "$@")
+VALID_ARGS=$(getopt -o h,c: --long help,skipreport,skipchangecheck,disablezulip,conf: -- "$@")
 
 function helpme {
     echo "usage: $0 [options]" 
@@ -23,6 +23,8 @@ function helpme {
     echo "                      --skipreport       : do not perform the report"
     echo "                      --skipchangecheck  : do not perform the changecheck"
     echo "                      --disablezulip     : STDOUT instead of zulip"
+    echo "  -c [FILE.json]      --conf [FILE.json] : provide a specifice config file"
+
 }
 
 
@@ -138,6 +140,14 @@ while [ : ]; do
   case "$1" in
     -t | --tag)
         addinterest "$2"
+        shift 2
+        ;;
+    -c | --conf)
+        [[ ! -f "$2" ]] && echo "Error: file '$2' not found" && exit 1
+        source lib/conf.sh
+        updateconfigwithfile "$2"
+        echo "updated config temporarily with '$2', resulting into:"
+        conf
         shift 2
         ;;
     --skipchangecheck)
