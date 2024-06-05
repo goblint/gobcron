@@ -107,7 +107,7 @@ bin/bigcomparison.sh -t tag1 -t tag2 -t tag3
 start your crontab editor with ```crontab -e``` and enter a line like:
 ```
 # m h  dom mon dow   command
-5 22 * * * bash -c "/home/user/gobcron/bin/nightly.sh"
+5 22 * * * bash -c "/home/user/gobcron/bin/run.sh"
 # end of crontab
 
 ```
