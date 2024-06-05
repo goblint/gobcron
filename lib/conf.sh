@@ -28,7 +28,7 @@ function updateconf {
 
 function updateconfigwithfile () {
     local file=$1
-    GOBCRON_CONFIG=$(jq '.[0] * .[1]' -s <(echo "$GOBCRON_CONFIG") "$file"| jq .)
+    GOBCRON_CONFIG=$(jq '.[0] * .[1]' -s <(echo "$GOBCRON_CONFIG") <(sed 's#^\s*//.*##' "$file") | jq .)
 
 }
 

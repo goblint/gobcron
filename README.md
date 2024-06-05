@@ -66,14 +66,41 @@ and review/modify ```conf/gobcron.user.json``` to your satisfaction. All non-men
         "svbenchdir": "/home/huber/sv-benchmarks",
         "gitrepo": "https://github.com/huber4711/analyzer.git",
         "branch": "widening-experiment",
+        "benchconf": "conf/svcomp22.json",
         "tag": "hubers-widening"
     }
 }
 ```
 - get inspired by other options from [gobcron.json](conf/gobcron.json)
+
 ## Running once
+
+either start a default run with:
 ```
-bin/nightly.sh
+bin/run.sh
+```
+or start a custom run with parameters obtained via `bin/run.sh -h`:
+```
+bin/run.sh --conf mygobcron.json --disablezulip --skipreport
+```
+
+## Working in a gobcron folder with provided tools
+
+
+### configuration topics
+
+You may view and/or alter the current default configuration, including gobcron.user.json
+```
+bin/conf.sh -s instance.basedir=/home/huber -a
+```
+and eventually play with configurations via `-g` and `-s`.
+
+### create comparison tables 
+
+You may revisit, which results are available under which tag names, and then create a set of comparison tables between exactly these benchmark run results.
+```
+bin/bigcomparison.sh -l
+bin/bigcomparison.sh -t tag1 -t tag2 -t tag3
 ```
 
 ## Anchoring in the crontab

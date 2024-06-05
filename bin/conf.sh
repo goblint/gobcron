@@ -51,6 +51,4 @@ while [ : ]; do
   esac
 done
 
-helpme
-
 exit 0
