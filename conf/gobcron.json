@@ -53,7 +53,7 @@
         "commitsdir": "commits",
         "analyzerdir": "analyzer",
         // currently not used:
-        "benchconf": "svcomp24.conf",
+        "benchconf": "conf/svcomp24.conf",
         "benchmark": "nightly.xml"
     }
 }
