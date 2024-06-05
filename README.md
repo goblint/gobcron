@@ -17,7 +17,7 @@ in order to communicate the run information back to you, you should [add a bot t
 
 You need to create a reasonable initial ```conf/gobcron.user.json``` file after installation. You can do that manually via copy/modify ```conf/gobcron.json``` or call the semi-interactive
 ```bash
-$gobcrondirectory/bin/init.sh
+myserver:/home/huber/gobcron$ /bin/init.sh
 ```
 and review/modify ```conf/gobcron.user.json``` to your satisfaction. All non-mentioned properties, are sourced default-values from the original ```conf/gobcron.json``` file.
 
@@ -76,12 +76,12 @@ and review/modify ```conf/gobcron.user.json``` to your satisfaction. All non-men
 ## Running once
 
 either start a default run with:
-```
-bin/run.sh
+```bash
+myserver:/home/huber/gobcron$ bin/run.sh
 ```
 or start a custom run with parameters obtained via `bin/run.sh -h`:
-```
-bin/run.sh --conf mygobcron.json --disablezulip --skipreport
+```bash
+myserver:/home/huber/gobcron$ bin/run.sh --conf mygobcron.json --disablezulip --skipchangecheck
 ```
 
 ## Working in a gobcron folder with provided tools
@@ -90,15 +90,15 @@ bin/run.sh --conf mygobcron.json --disablezulip --skipreport
 ### configuration topics
 
 You may view and/or alter the current default configuration, including gobcron.user.json
-```
-bin/conf.sh -s instance.basedir=/home/huber -a
+```bash
+myserver:/home/huber/gobcron$ bin/conf.sh -s instance.basedir=/home/huber -a
 ```
 and eventually play with configurations via `-g` and `-s`.
 
 ### create comparison tables 
 
 You may revisit, which results are available under which tag names, and then create a set of comparison tables between exactly these benchmark run results.
-```
+```bash
 myserver:/home/huber/gobcron$ bin/bigcomparison.sh -l
 available tags:
     [TAG] ............................................ [DIRECTORY]
@@ -113,7 +113,7 @@ myserver:/home/huber/gobcron$ bin/bigcomparison.sh -t tag1 -t tag2 -t tag3
 start your crontab editor with ```crontab -e``` and enter a line like:
 ```
 # m h  dom mon dow   command
-5 22 * * * bash -c "/home/user/gobcron/bin/run.sh"
+5 22 * * * bash -c "/home/huber/gobcron/bin/run.sh"
 # end of crontab
 
 ```
