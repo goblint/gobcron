@@ -66,6 +66,15 @@ done
 
 
 function performstatistics () {
+    function score () {
+        echo $(cat $1 | grep -o "Score}".* | sed 's/Score}{\(.*\)}%/\1/' )
+    }
+    function wrong () {
+        echo $(cat $1 | grep -o "Wrong}{}{Count}".* | sed 's/Wrong}{}{Count}{\(.*\)}%/\1/' )
+    }
+    function timeing () {
+        echo $(cat $1 | grep -o "Cputime}{All}{}{Sum}{".* | sed 's/Cputime}{All}{}{Sum}{\(.*\)\..*}%/\1/' )
+    }
 
     firstresult="$(ls -d -1 results/* | head -n 1)"
     declare -a runsets=($(cat "$firstresult/"*.txt| head -n 30 | grep "run sets:" | awk '{ $1=""; $2=""; print $0 }' | tr "," " "))
@@ -89,13 +98,12 @@ function performstatistics () {
         do
             tagname="$(cat "$result/tag")"
             echo "   Resulttag: $tagname"
-            file="$(echo results/old.1/*"$taskgroup".xml.bz2 | head -n 1)"
+            file="$(echo $result/*"$taskgroup".xml.bz2 | head -n 1)"
             table-generator -q -n "$tagname--$taskgroup" -o "evaluation/tex" -f statistics-tex "$file"
-            echo "       Score: $(cat evaluation/tex/"$tagname"--"$taskgroup".statistics.tex | grep -o Score\}.* | sed 's/Score}{\(.*\)}%/\1/')"
-            echo "       #Wrong: $(cat evaluation/tex/"$tagname"--"$taskgroup".statistics.tex | grep -o Wrong\}\{\}\{Count\}.* | sed 's/Wrong}{}{Count}{\(.*\)}%/\1/')"
-            echo "       Cputime $(cat evaluation/tex/"$tagname"--"$taskgroup".statistics.tex | grep -o Cputime\}\{All\}\{\}\{Sum\}\{.* | sed 's/Cputime}{All}{}{Sum}{\(.*\)\..*}%/\1/')"
-        done
-    
+            printf "       Score: %s\n" "$(score   "evaluation/tex/$tagname--$taskgroup.statistics.tex")"
+            printf "      #Wrong: %s\n" "$(wrong   "evaluation/tex/$tagname--$taskgroup.statistics.tex")"
+            printf "     CPUtime: %s\n" "$(timeing "evaluation/tex/$tagname--$taskgroup.statistics.tex")"
+        done 
         sep="/*$taskgroup.xml.bz2 "
         printf -v string "%s$sep" "${interest[@]}"
         table-generator -q -o "evaluation/crossprod" -n "$taskgroup" $string
