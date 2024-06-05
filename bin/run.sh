@@ -11,6 +11,7 @@ source "$SCRIPTDIR/../lib/library.sh"
 FORCERUN="false"
 FORCECOMPILE="false"
 SKIPREPORT="false"
+DISABLEZULIP="false"
 shopt -s extglob
 
 
@@ -20,12 +21,19 @@ function helpme {
     echo "  -h                  --help             : show this help"
     echo "                      --skipreport       : do not perform the report"
     echo "                      --skipchangecheck  : do not perform the changecheck"
+    echo "                      --disablezulip     : STDOUT instead of zulip"
 }
 
 
 function zulip () {
     local message; message="$1"
     local who; who="$(conf "zulip.mode")"
+
+    if [ "$DISABLEZULIP" == "true" ]; then
+        echo "$message"
+        return
+    fi
+
     if [ "$who" == "stream" ]; then
         local stream; stream="$(conf "zulip.stream")"
         zulipstream "$stream" "commit $upstreamhash" "$message"
@@ -138,6 +146,10 @@ while [ : ]; do
         ;;
     --skipreport)
         SKIPREPORT="true"
+        shift
+        ;;
+    --disablezulip)
+        DISABLEZULIP="true"
         shift
         ;;
     -h | --help)
