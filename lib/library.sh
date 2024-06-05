@@ -130,7 +130,8 @@ function compareresults () {
 	    ((currentscore)) || currentscore=0
 	    ((oldscore)) || oldscore=0
 	    diff="$((currentscore-oldscore))"
-        prettyruntime="$prettyruntime  (:red_triangle_up: $(printf "%+d" $((currentruntime-oldruntime))) s)"
+        local timediff="$((currentruntime-oldruntime))"
+        prettyruntime="$prettyruntime  (:red_triangle_up: $(printf "%+dmins %+dsecs" $((timediff/60)) $((timediff%60)) ))"
 	fi
 	local line="";
 	local difftablesize=0;
