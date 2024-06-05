@@ -26,6 +26,12 @@ function updateconf {
     GOBCRON_CONFIG=$(jq ".$key=\"$value\"" <<< "$GOBCRON_CONFIG")
 }
 
+function updateconfigwithfile () {
+    local file=$1
+    GOBCRON_CONFIG=$(jq '.[0] * .[1]' -s <(echo "$GOBCRON_CONFIG") "$file"| jq .)
+
+}
+
 # conf echoes the query value $1=query
 function conf () {
     [[ -z "$GOBCRON_CONFIG" ]] && echo "Error: GOBCRON_CONFIG is not initialized -- call initconf [basedir]" && return 1
