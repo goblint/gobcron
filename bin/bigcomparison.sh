@@ -7,13 +7,27 @@ function DEBUG () {
     [ "$_DEBUG" == "on" ] &&  "$@"
 }
 
-function helpme {
-    local progname; progname=$(basename "$0")
-    echo "usage: $progname [options]" 
-    echo "  -t tag              --tag tag          : specify a tag for the comparison"
+function listtags {
+    function listtag {
+        local dir="$1"
+        local tag="$(cat "$dir")"
+        local line="................................................."
+        printf "    %s %s ( %s )\n" $tag "${line:${#tag}}" "$(dirname $dir)"
+    }
+    echo "available tags:"
+    printf "    %s %s %s\n" "[TAG]" "............................................" "[DIRECTORY]"
+    ls results/*/tag | xargs -n 1 | xargs -I@ -P4 bash -c "$(declare -f listtag); listtag @"
 }
 
-VALID_ARGS=$(getopt -o h,t: --long help,tag: -- "$@")
+function helpme {
+    local progname; progname=$(basename "$0")
+    echo "usage: $progname [options] [-t tag1] [-t tag2] ..." 
+    echo "  -t tag              --tag tag          : specify a tag for the comparison"
+    echo ""
+    listtags
+}
+
+VALID_ARGS=$(getopt -o l,h,t: --long list,help,tag: -- "$@")
 if [[ $? -ne 0 ]]; then
     exit 1;
 fi
@@ -25,9 +39,16 @@ function addinterest {
     [[ -n "$potential" ]] && interest+=("$(dirname $potential)")
 }
 
+
+
 eval set -- "$VALID_ARGS"
 while [ : ]; do
   case "$1" in
+    -l | --list)
+        listtags
+        shift
+        exit 0
+        ;;
     -t | --tag)
         addinterest "$2"
         shift 2
@@ -42,7 +63,6 @@ while [ : ]; do
         ;;
   esac
 done
-
 
 
 function performstatistics () {
@@ -82,3 +102,6 @@ function performstatistics () {
     done
 
 }
+
+[[ "${#interest[@]}" == "0" ]] && printf "\n%s\n\n" " ERROR: No tags specified" && helpme && exit 1 
+[[ "${#interest[@]}" != "0" ]] && performstatistics
