@@ -14,6 +14,7 @@ SKIPREPORT="false"
 DISABLEZULIP="false"
 shopt -s extglob
 
+VALID_ARGS=$(getopt -o h --long help,skipreport,skipchangecheck,disablezulip -- "$@")
 
 function helpme {
     echo "usage: $0 [options]" 
@@ -128,7 +129,6 @@ function main () {
 
 
 
-VALID_ARGS=$(getopt -o h --long help,skipreport,skipchangecheck -- "$@")
 if [[ $? -ne 0 ]]; then
     exit 1;
 fi
