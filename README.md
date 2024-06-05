@@ -99,8 +99,14 @@ and eventually play with configurations via `-g` and `-s`.
 
 You may revisit, which results are available under which tag names, and then create a set of comparison tables between exactly these benchmark run results.
 ```
-bin/bigcomparison.sh -l
-bin/bigcomparison.sh -t tag1 -t tag2 -t tag3
+myserver:/home/huber/gobcron$ bin/bigcomparison.sh -l
+available tags:
+    [TAG] ............................................ [DIRECTORY]
+    tag3 ............................................. ( results/current )
+    tag2 ............................................. ( results/old.1 )
+    tag4 ............................................. ( results/old.2 )
+    tag1 ............................................. ( results/old.3 )
+myserver:/home/huber/gobcron$ bin/bigcomparison.sh -t tag1 -t tag2 -t tag3
 ```
 
 ## Anchoring in the crontab
