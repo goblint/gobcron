@@ -17,7 +17,7 @@ in order to communicate the run information back to you, you should [add a bot t
 
 You need to create a reasonable initial ```conf/gobcron.user.json``` file after installation. You can do that manually via copy/modify ```conf/gobcron.json``` or call the semi-interactive
 ```bash
-myserver:/home/huber/gobcron$ ./bin/init.sh
+myserver:/home/huber/gobcron$ bin/init.sh
 ```
 and review/modify ```conf/gobcron.user.json``` to your satisfaction. All non-mentioned properties, are sourced default-values from the original ```conf/gobcron.json``` file.
 
@@ -45,7 +45,7 @@ and review/modify ```conf/gobcron.user.json``` to your satisfaction. All non-men
     }
 }
 ```
-- to set up a one-shot on a specific branch,  notifying user ID ```4711007``` on the zulip instance, use a config like:
+- to set up a one-shot on a specific branch,  notifying the users with IDs ```4711007,4998451``` on the zulip instance, use a config like:
 ```json
 {
     "server": {
@@ -59,13 +59,14 @@ and review/modify ```conf/gobcron.user.json``` to your satisfaction. All non-men
             "email": "bot@myinstance.zulipchat.com",
             "apikey": "GARBLEDNONSENSE"
         },
-        "mode": "4711007"
+        "mode": "4711007,4998451"
     },
     "instance": {
         "basedir": "/home/huber/gobcron",
         "svbenchdir": "/home/huber/sv-benchmarks",
         "gitrepo": "https://github.com/huber4711/analyzer.git",
         "branch": "widening-experiment",
+        "commit": "471169",
         "benchconf": "conf/svcomp22.json",
         "tag": "hubers-widening"
     }
@@ -77,7 +78,7 @@ and review/modify ```conf/gobcron.user.json``` to your satisfaction. All non-men
 
 check your config first:
 ```bash
-myserver:/home/huber/gobcron$ /bin/run.sh --explain
+myserver:/home/huber/gobcron$ bin/run.sh --explain
 ```
 
 either start a default run with:
