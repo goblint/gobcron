@@ -42,6 +42,8 @@
         "branch": "master",
         // commithash or HEAD for the latest commit
         "commit": "HEAD",
+        // options are passed to the benchexec in <option> tags
+        "options": "",
         // tag is stored in the results directory and appears in the commits/ folder naming scheme
         "tag": "nightly",
         // compareto is the tag of the previous benchmark run, which is used to compare the results; relative to the 'instance.resultsdir' directory
