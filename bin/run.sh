@@ -128,7 +128,7 @@ function main () {
     # relocate goblint-nightly.template.xml to the correct folder on this server
     rm -f "$basedir/nightly.xml"
     cat "$basedir/conf/nightly-template.xml" | sed "s#SVBENCHMARKPREFIX#$(conf "instance.svbenchdir")#" > "$basedir/nightly.xml"
-    cp  "$basedir/$(conf "instance.analyzerdir")/$(conf "instance.benchconf")" "$basedir/conf.json"  
+    cp  "$basedir/$(conf "instance.analyzerdir")/$(conf "instance.benchconf")" "$basedir/$(conf "instance.analyzerdir")/conf.json"
 
     # perform the actual benchmark
     cd "$basedir/$(conf "instance.analyzerdir")"
@@ -142,7 +142,7 @@ function main () {
         "$basedir/nightly.xml"
 
     rm -f "$basedir/nightly.xml"
-    rm -f "$basedir/conf.json"
+    rm -f "$basedir/$(conf "instance.analyzerdir")/conf.json"
     cd -
 
     # compare the result to the previous one/ compareto
