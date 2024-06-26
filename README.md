@@ -75,6 +75,11 @@ and review/modify ```conf/gobcron.user.json``` to your satisfaction. All non-men
 
 ## Running once
 
+check your config first:
+```bash
+myserver:/home/huber/gobcron$ /bin/run.sh --explain
+```
+
 either start a default run with:
 ```bash
 myserver:/home/huber/gobcron$ bin/run.sh
