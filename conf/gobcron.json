@@ -25,7 +25,7 @@
             "MichaelS": "517772",
             "MichaelP": "652581"
         },
-        // mode is either "stream" or some concrete User id as e.g. in the user section
+        // mode is either "stream" or a comma separated list of some concrete User id as e.g. in the user section
         "mode": "stream",
         // definining the name of the stream, that gobcron posts its messages to in stream mode
         "stream": "svcomp-nightly"

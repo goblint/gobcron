@@ -43,7 +43,11 @@ function zulip () {
         local stream; stream="$(conf "zulip.stream")"
         zulipstream "$stream" "commit $upstreamhash" "$message"
     else
-        zulipmessage "$who" "$message"
+        recipients="$(conf "zulip.mode")"
+        recipients=(${recipients//,/})
+        for recipient in "${recipients[@]}"; do
+            zulipmessage "$recipient" "$message"
+        done
     fi
 }
 
