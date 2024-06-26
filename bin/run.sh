@@ -83,6 +83,12 @@ function whatwillhappen () {
         $basedir/$(conf "instance.analyzerdir")/$(conf "instance.benchconf")"
 
     echo -e "benchmark command is: $benchexeccommand"
+    who="$(conf "zulip.mode")"
+    if [ "$who" == "stream" ]; then
+        echo -e "results are communicated via zulip bot $(conf "zulip.bot.email") to stream $(conf "zulip.stream")"
+    else
+        echo -e "results are communicated via zulip bot $(conf "zulip.bot.email") to user $(conf "zulip.mode")"
+    fi
 }
 
 function main () {
