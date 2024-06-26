@@ -12,14 +12,16 @@ FORCERUN="false"
 FORCECOMPILE="false"
 SKIPREPORT="false"
 DISABLEZULIP="false"
+CONFFILE="conf/gobcron.user.conf"
 shopt -s extglob
 
-VALID_ARGS=$(getopt -o h,c: --long help,skipreport,skipchangecheck,disablezulip,conf: -- "$@")
+VALID_ARGS=$(getopt -o e,h,c: --long help,explain,skipreport,skipchangecheck,disablezulip,conf: -- "$@")
 
 function helpme {
     echo "usage: $0 [options]" 
     echo "options:"
     echo "  -h                  --help             : show this help"
+    echo "  -e                  --explain          : print the actual commands that will be executed"
     echo "                      --skipreport       : do not perform the report"
     echo "                      --skipchangecheck  : do not perform the changecheck"
     echo "                      --disablezulip     : STDOUT instead of zulip"
@@ -55,6 +57,32 @@ function conditionalcompile () {
         #from library.sh
         compile
     fi
+}
+
+function whatwillhappen () {
+    conf
+    echo ""
+    echo " ... which means:"
+    echo "--------------------------"
+    echo ""
+
+    basedir="$(conf "instance.basedir")"
+    echo -e "current conf-file is: $CONFFILE           ... change with -c parameter"
+    echo -e "basedir will be: $basedir"
+    echo -e "tag will be: $(conf "instance.tag")"
+    echo -e "  -> result goes to $basedir/$(conf "instance.resultsdir")/$(date +%Y%m%d-%H%M)--COMMITID-$(conf "instance.tag")"
+    repocommand="git clone --branch $(conf "instance.branch") $(conf "instance.gitrepo")"
+    echo -e "reference git repo will be:\n  $repocommand" 
+    benchexeccommand="\n  benchexec --read-only-dir / --overlay-dir . --overlay-dir /home 
+        --outputpath    $basedir/$(conf "instance.resultsdir")/current/ 
+        --memorylimit   $(conf "server.memory") 
+        --numOfThreads  $(conf "server.threads") 
+        --timelimit     $(conf "instance.timelimit") 
+        --walltimelimit $(conf "instance.walltimelimit") 
+        --name          $(conf "instance.tag") 
+        $basedir/$(conf "instance.analyzerdir")/$(conf "instance.benchconf")"
+
+    echo -e "benchmark command is: $benchexeccommand"
 }
 
 function main () {
@@ -144,11 +172,17 @@ while [ : ]; do
         ;;
     -c | --conf)
         [[ ! -f "$2" ]] && echo "Error: file '$2' not found" && exit 1
+        CONFFILE="$2"
         source lib/conf.sh
         updateconfigwithfile "$2"
         echo "updated config temporarily with '$2', resulting into:"
         conf
         shift 2
+        ;;
+    -e | --explain)
+        FORCERUN="true"
+        whatwillhappen
+        exit 0
         ;;
     --skipchangecheck)
         FORCECOMPILE="true"
