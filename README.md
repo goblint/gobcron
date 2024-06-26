@@ -17,7 +17,7 @@ in order to communicate the run information back to you, you should [add a bot t
 
 You need to create a reasonable initial ```conf/gobcron.user.json``` file after installation. You can do that manually via copy/modify ```conf/gobcron.json``` or call the semi-interactive
 ```bash
-myserver:/home/huber/gobcron$ /bin/init.sh
+myserver:/home/huber/gobcron$ ./bin/init.sh
 ```
 and review/modify ```conf/gobcron.user.json``` to your satisfaction. All non-mentioned properties, are sourced default-values from the original ```conf/gobcron.json``` file.
 
