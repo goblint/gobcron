@@ -5,7 +5,8 @@
   <resultfiles>**/witness.{graphml,yml}</resultfiles>
 
   <option name="--conf">conf.json</option>
-
+  SVBENCHMARKOPTIONS
+  
   <rundefinition name="SV-COMP24_unreach-call">
     <tasks name="ReachSafety-Arrays">
       <includesfile>SVBENCHMARKPREFIX/c/ReachSafety-Arrays.set</includesfile>
