@@ -51,6 +51,7 @@ compile () {
     cd "$base"
     rm -rf "$analyzerdir"
     git clone --branch "$(conf "instance.branch")" "$(conf "instance.gitrepo")" "$analyzerdir"
+    git -C "$analyzerdir" checkout "$(conf "instance.commit")"
     make -C "$base/$analyzerdir" setup
     make -C "$base/$analyzerdir" release
     cd -

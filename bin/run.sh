@@ -75,7 +75,7 @@ function whatwillhappen () {
     echo -e "basedir will be: $basedir"
     echo -e "tag will be: $(conf "instance.tag")"
     echo -e "  -> result goes to $basedir/$(conf "instance.resultsdir")/$(date +%Y%m%d-%H%M)--COMMITID-$(conf "instance.tag")"
-    repocommand="git clone --branch $(conf "instance.branch") $(conf "instance.gitrepo")"
+    repocommand="git clone --branch $(conf "instance.branch") $(conf "instance.gitrepo") && git checkout $(conf "instance.commit")"
     echo -e "reference git repo will be:\n  $repocommand" 
     benchexeccommand="\n  benchexec --read-only-dir / --overlay-dir . --overlay-dir /home 
         --outputpath    $basedir/$(conf "instance.resultsdir")/current/ 
