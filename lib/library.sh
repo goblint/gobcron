@@ -87,6 +87,38 @@ symlinks () {
     ls "$base/$resultsdir"/*/commithash | xargs -n1 bash -c 'ln -s $(dirname $0) '"$base/$commitsdir"'/$(cat $(dirname $0)/date)--$(cat $0)-$(cat $(dirname $0)/tag)'
 }
 
+# push to webserver via WebDAV
+function pushtoweb () {
+    local base; base="$(conf "instance.basedir")"
+    local resultsdir; resultsdir=$(conf "instance.resultsdir")
+    local protocol; protocol="$(conf "upload.protocol")"
+    local url; url="$(conf "upload.url")"
+    local user; user="$(conf "upload.user")"
+    local pass; pass="$(conf "upload.password")"
+
+    local date="$(cat "$base/$resultsdir/current/date")"
+    local current="$(cat "$base/$resultsdir/current/commithash")"
+    local tag="$(cat "$base/$resultsdir/current/tag")"
+    local uploadfile="$tag-$date--$current.tar.gz"
+    tar czf "/tmp/$uploadfile" "$base/$resultsdir/current/diff2previous" "$base/$resultsdir"/current/*.logfiles.zip 2>/dev/null
+    if [ "$protocol" == "webdav" ]; then
+        # currently only webdav/https is supported
+        if [ -z "$user" ]; then # anonymous upload
+            #DEBUG echo curl -4 --silent -T "/tmp/$uploadfile" "$url"
+            curl -4 --silent -T "/tmp/$uploadfile" "$url"
+        else # authenticated upload
+            #DEBUG echo curl -4 --silent -T "/tmp/$uploadfile" -u "$user:$pass" "$url"
+            curl -4 --silent -T "/tmp/$uploadfile" -u "$user:$pass" "$url"
+        fi
+    else
+        echo ""
+        return
+    fi
+    #tar tzf "/tmp/$uploadfile"
+    rm -rf "/tmp/$uploadfile"
+    echo "$uploadfile"
+}
+
 # compare two result folders and create a comparison table
 # parameters: $1=accumulator , $2=comparisondir1 , $3=comparisondir2
 function compareresults () {

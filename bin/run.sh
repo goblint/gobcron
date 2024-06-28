@@ -93,6 +93,12 @@ function whatwillhappen () {
     else
         echo -e "results are communicated via zulip bot $(conf "zulip.bot.email") to user $(conf "zulip.mode")"
     fi
+    upload="$(conf "upload.protocol")"
+    if [ "$upload" == "webdav" ]; then
+        echo -e "results are uploaded via WebDAV to $(conf "upload.url")"
+    else
+        echo -e "results are not uploaded"
+    fi
 }
 
 function main () {
@@ -155,9 +161,15 @@ function main () {
     #from library.sh
     runinfo rundata
 
+    uploadfile="$(pushtoweb)"
+
     benchstartseconds=$((($(date +%s)-$benchstartseconds)))
     benchmarkhours=$((benchstartseconds/3600))
     benchmarkminutes=$(printf "%02d"$((benchstartseconds/60%60)))
+
+    if [ "$uploadfile" != "" ]; then
+        zulip "Results are available at: $(conf "upload.url")/$uploadfile"
+    fi
 
     zulip "sv-comp run for commit ${upstreamhash:0:7} terminated at $(date +%H:%M) after $benchmarkhours:$benchmarkminutes minutes."
 

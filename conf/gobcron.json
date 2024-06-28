@@ -30,6 +30,13 @@
         // definining the name of the stream, that gobcron posts its messages to in stream mode
         "stream": "svcomp-nightly"
     },
+    "upload": {
+        // uploadprotocol empty or webdav
+        "protocol": "webdav",
+        "url": "https://webserver.pl.cit.tum.de",
+        "user": "",
+        "password": ""
+    },
     // instance section 
     //   keeps configuration which is particular to the concrete sequence of benchmark
     "instance": {
