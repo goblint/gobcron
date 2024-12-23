@@ -144,7 +144,7 @@ function compareresults () {
     local benchmarkname; benchmarkname=$(conf "instance.benchmark" | xargs -n1 basename -s .xml)
     DEBUG echo "diffing commit $current with old $old"
     accu="$gobcron"
-    echo "| Task | last: $oldtag / $old | current: $currenttag / $current | :red_triangle_up: score | difftable | #:siren: results| :hourglass: runtime" > "$gobcron"
+    echo "| Task | last: $oldtag / $old | current: $currenttag / $current | :red_triangle_up: score | difftable | #:siren: wrong verdicts | :hourglass: runtime" > "$gobcron"
     echo "|---|---|---|---|---|---|---" >> "$gobcron"
     DEBUG echo "using tmp file $gobcron"
     #retrieve taskgroups
