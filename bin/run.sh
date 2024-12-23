@@ -128,6 +128,9 @@ function main () {
     #from library.sh
     commitinfo out
 
+    local localhash; localhash=$(currentversion)
+    local upstreamhash; upstreamhash=$(repoversion)
+
     zulip "$(conf server.user)@$(conf server.name) started a $(conf instance.tag) sv-comp run for commit $upstreamhash [differing from $localhash](https://github.com/goblint/analyzer/compare/$localhash...$upstreamhash) at $benchstarttime."
     zulip "$out"
 
@@ -165,16 +168,15 @@ function main () {
 
     benchstartseconds=$((($(date +%s)-$benchstartseconds)))
     benchmarkhours=$((benchstartseconds/3600))
-    benchmarkminutes=$(printf "%02d"$((benchstartseconds/60%60)))
+    benchmarkminutes=$(printf "%02d" $((benchstartseconds/60%60)))
 
     if [ "$uploadfile" != "" ]; then
-        zulip "Results are available at: $(conf "upload.url")/$uploadfile"
+        zulip "sv-comp run for commit ${upstreamhash:0:7} terminated at $(date +%H:%M) after $benchmarkhours:$benchmarkminutes minutes. [Results]($(conf "upload.url")/$uploadfile) are now available."
+    else
+        zulip "sv-comp run for commit ${upstreamhash:0:7} terminated at $(date +%H:%M) after $benchmarkhours:$benchmarkminutes minutes."
     fi
 
-    zulip "sv-comp run for commit ${upstreamhash:0:7} terminated at $(date +%H:%M) after $benchmarkhours:$benchmarkminutes minutes."
-
     [[ "$SKIPREPORT" != "true" ]] && (zulip "$rundata" ; zulip "$acc")
-
 
     exit 0
 }
