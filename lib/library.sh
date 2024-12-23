@@ -105,10 +105,10 @@ function pushtoweb () {
         # currently only webdav/https is supported
         if [ -z "$user" ]; then # anonymous upload
             #DEBUG echo curl -4 --silent -T "/tmp/$uploadfile" "$url"
-            curl -4 --silent -T "/tmp/$uploadfile" "$url"
+            curl -4 --silent -T "/tmp/$uploadfile" "$url" > /dev/null
         else # authenticated upload
             #DEBUG echo curl -4 --silent -T "/tmp/$uploadfile" -u "$user:$pass" "$url"
-            curl -4 --silent -T "/tmp/$uploadfile" -u "$user:$pass" "$url"
+            curl -4 --silent -T "/tmp/$uploadfile" -u "$user:$pass" "$url" > /dev/null
         fi
     else
         echo ""
@@ -137,12 +137,14 @@ function compareresults () {
     comparison1="$2"
     comparison2="$3"
     local current; current="$(cat "$comparison1"/commithash)";
+    local currenttag; currenttag="$(cat "$comparison1"/tag)";
     local old; old="$(cat "$comparison2"/commithash)";
+    local oldtag; oldtag="$(cat "$comparison2"/tag)";
     local gobcron; gobcron=$(mktemp -t gobcronXXXX)
     local benchmarkname; benchmarkname=$(conf "instance.benchmark" | xargs -n1 basename -s .xml)
     DEBUG echo "diffing commit $current with old $old"
     accu="$gobcron"
-    echo "| Task | last: $old | current: $current | :red_triangle_up: score | difftable | #:siren: results| :hourglass: runtime" > "$gobcron"
+    echo "| Task | last: $oldtag / $old | current: $currenttag / $current | :red_triangle_up: score | difftable | #:siren: results| :hourglass: runtime" > "$gobcron"
     echo "|---|---|---|---|---|---|---" >> "$gobcron"
     DEBUG echo "using tmp file $gobcron"
     #retrieve taskgroups
