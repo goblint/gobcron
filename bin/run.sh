@@ -171,9 +171,9 @@ function main () {
     benchmarkminutes=$(printf "%02d" $((benchstartseconds/60%60)))
 
     if [ "$uploadfile" != "" ]; then
-        zulip "sv-comp run for commit ${upstreamhash:0:7} terminated at $(date +%H:%M) after $benchmarkhours:$benchmarkminutes minutes. [Results]($(conf "upload.url")/$uploadfile) are now available."
+        zulip "SV-Comp run for commit ${upstreamhash:0:7} terminated at $(date +%H:%M) after $benchmarkhours:$benchmarkminutes h. [Results]($(conf "upload.url")/$uploadfile) are now available."
     else
-        zulip "sv-comp run for commit ${upstreamhash:0:7} terminated at $(date +%H:%M) after $benchmarkhours:$benchmarkminutes minutes."
+        zulip "SV-Comp run for commit ${upstreamhash:0:7} terminated at $(date +%H:%M) after $benchmarkhours:$benchmarkminutes h."
     fi
 
     [[ "$SKIPREPORT" != "true" ]] && (zulip "$rundata" ; zulip "$acc")
