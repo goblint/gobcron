@@ -44,10 +44,10 @@ function zulip () {
         zulipstream "$stream" "commit $upstreamhash" "$message"
     else
         recipients="$(conf "zulip.mode")"
-        recipients=(${recipients//,/})
-        for recipient in "${recipients[@]}"; do
+#        recipients=(${recipients//,/})
+#        for recipient in "${recipients[@]}"; do
             zulipmessage "$recipient" "$message"
-        done
+#        done
     fi
 }
 
