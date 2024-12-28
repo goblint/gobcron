@@ -4,8 +4,8 @@
     "server": {
         "name": "server01.pl.cit.tum.de",
         "user": "goblint",
-        "threads": "44",
-        "memory": "2GB"
+        "threads": "47",
+        "memory": "5GB"
     },
     // zulip section
     //   keeps configuration which is particular to the communication with goblint's zulip server
@@ -23,7 +23,8 @@
             "Sarah": "517790",
             "Julian": "517774",
             "MichaelS": "517772",
-            "MichaelP": "652581"
+            "MichaelP": "652581",
+            "Ali": "704915"
         },
         // mode is either "stream" or a comma separated list of some concrete User id as e.g. in the user section
         "mode": "stream",
@@ -33,7 +34,7 @@
     "upload": {
         // uploadprotocol empty or webdav
         "protocol": "webdav",
-        "url": "https://webserver.pl.cit.tum.de",
+        "url": "https://www2.in.tum.de/goblint/",
         "user": "",
         "password": ""
     },
@@ -64,7 +65,7 @@
         "commitsdir": "commits",
         "analyzerdir": "analyzer",
         // currently not used:
-        "benchconf": "conf/svcomp24.json",
+        "benchconf": "conf/svcomp25.json",
         "benchmark": "nightly.xml"
     }
 }
