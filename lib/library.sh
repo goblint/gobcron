@@ -187,10 +187,11 @@ function compareresults () {
 	    local difftablesize=0;
 	    difftablesize=$(cat "$comparison1/diff2previous"/"$taskgroup".diff.csv 2> /dev/null | tail -n +4 | wc -l)
 	    DEBUG echo "scores: $currentscore vs $oldscore"
-
-	    [[ "$currentscore" -gt "$oldscore" ]] && line="| ${taskgroup#SV-COMP[0-9][0-9]_} | $oldscore | $currentscore | :trophy: (+ $diff)  | $difftablesize | $wrongcount | $prettyruntime" ;
-	    [[ "$currentscore" -eq "$oldscore" ]] && line="| ${taskgroup#SV-COMP[0-9][0-9]_} | $oldscore | $currentscore | :check_mark: (+/-0) | $difftablesize | $wrongcount | $prettyruntime" ;
-	    [[ "$currentscore" -lt "$oldscore" ]] && line="| ${taskgroup#SV-COMP[0-9][0-9]_} | $oldscore | $currentscore | :warning: ($diff)   | $difftablesize | $wrongcount | $prettyruntime" ;
+        taskgroup="${taskgroup#*_}"  # remove everything before _
+        taskgroup="${taskgroup%%.*}" # remove additional stuff after .
+	    [[ "$currentscore" -gt "$oldscore" ]] && line="| $taskgroup | $oldscore | $currentscore | :trophy: (+ $diff)  | $difftablesize | $wrongcount | $prettyruntime" ;
+	    [[ "$currentscore" -eq "$oldscore" ]] && line="| $taskgroup | $oldscore | $currentscore | :check_mark: (+/-0) | $difftablesize | $wrongcount | $prettyruntime" ;
+	    [[ "$currentscore" -lt "$oldscore" ]] && line="| $taskgroup | $oldscore | $currentscore | :warning: ($diff)   | $difftablesize | $wrongcount | $prettyruntime" ;
 	    echo "$line" >> "$gobcron"
     done
     rm -f "$comparison1"/diff2previous/*.tex
