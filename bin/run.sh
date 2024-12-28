@@ -148,6 +148,7 @@ function main () {
         --timelimit     "$(conf "instance.timelimit")" \
         --walltimelimit "$(conf "instance.walltimelimit")" \
         --name          "$(conf "instance.tag")" \
+        --no-hyperthreading \
         "$basedir/nightly.xml"
 
     rm -f "$basedir/nightly.xml"
