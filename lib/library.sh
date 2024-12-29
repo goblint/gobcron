@@ -242,7 +242,7 @@ function runinfo() {
 |---|---
 | codebase | $gitinfo
 | config file | $config
-| parallel runers | $runs
+| parallel runners | $runs
 | task memory | $memory
 | time limit | $time
 | results    | $path"

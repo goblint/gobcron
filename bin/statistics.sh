@@ -26,7 +26,7 @@ function helpme {
     echo "  -d                  --debug            : enable debug output"
     echo " example: $progname -l                          : first list all available tags"
     echo "          $progname -t tag1 -t tag2             : now choose two tags and compare them"
-    echo "          $progname -f dir1 -t dir2             : alternatively choose two folders and compare them"
+    echo "          $progname -f dir1 -f dir2             : alternatively choose two folders and compare them"
 }
 
 function listtags {
