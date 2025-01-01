@@ -84,6 +84,7 @@ function whatwillhappen () {
         --timelimit     $(conf "instance.timelimit") 
         --walltimelimit $(conf "instance.walltimelimit") 
         --name          $(conf "instance.tag") 
+        --no-hyperthreading 
         $basedir/$(conf "instance.analyzerdir")/$(conf "instance.benchconf")"
 
     echo -e "benchmark command is: $benchexeccommand"
@@ -110,6 +111,10 @@ function main () {
 
     DEBUG echo "basedir is: $basedir"
 
+    local localhash; localhash=$(repoversion)
+    local upstreamhash; upstreamhash=$(currentversion)
+
+
     [[ "$FORCECOMPILE" != "true" ]] && conditionalcompile
 
     # skip if goblint is already running
@@ -128,8 +133,6 @@ function main () {
     #from library.sh
     commitinfo out
 
-    local localhash; localhash=$(currentversion)
-    local upstreamhash; upstreamhash=$(repoversion)
 
     zulip "$(conf server.user)@$(conf server.name) started a $(conf instance.tag) sv-comp run for commit $upstreamhash [differing from $localhash](https://github.com/goblint/analyzer/compare/$localhash...$upstreamhash) at $benchstarttime."
     zulip "$out"

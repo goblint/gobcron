@@ -154,11 +154,9 @@ systemctl --user enable gobcron.timer
 systemctl --user start gobcron.timer
 systemctl --user list-timers
 ```
-- you can manually trigger the gobcron job by
-
+- you can manually trigger the gobcron job by ```systemctl --user start gobcron``` or schedule a one-time run with  
 ```
-systemd-run --user --on-calendar="2025-01-30 20:01:35" cd gobcron;bin/run.sh
-systemctl --user start gobcron
+systemd-run --user --on-calendar="2025-01-30 20:01:35" bash -c "cd gobcron;bin/run.sh"
 ```
 
 ## Legacy: Anchoring in the crontab
