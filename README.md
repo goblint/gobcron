@@ -115,7 +115,11 @@ available tags:
 myserver:/home/huber/gobcron$ bin/bigcomparison.sh -t tag1 -t tag2 -t tag3
 ```
 
-## systemd as alternative to crontab
+## sending zulip messages from command line or scripts
+
+If you have configured your configration with a valid zulip bot, you may send messages to the zulip id of your choice via ```bin/zulip.sh [ID] "My message"```
+
+## systemd for regularly scheduled execution
 
 You can also use systemd's timer units for a scheduled run:
 - make sure that systemd is present even when the user goblint is logged out, and timers are respected with ```loginctl enable-linger goblint```
