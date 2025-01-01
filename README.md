@@ -115,7 +115,53 @@ available tags:
 myserver:/home/huber/gobcron$ bin/bigcomparison.sh -t tag1 -t tag2 -t tag3
 ```
 
-## Anchoring in the crontab
+## systemd as alternative to crontab
+
+You can also use systemd's timer units for a scheduled run:
+- make sure that systemd is present even when the user goblint is logged out, and timers are respected with ```loginctl enable-linger goblint```
+- create the file ```.config/systemd/user/gobcron.service``` : 
+```
+[Unit]
+Description=Runs an SVCOMP goblint benchmark
+
+[Service]
+Type=oneshot
+Environment="PATH=/usr/lib/ccache/bin:/usr/local/sbin:/usr/local/bin:/usr/bin"
+WorkingDirectory=/home/goblint/gobcron
+ExecStart=/home/goblint/gobcron/bin/run.sh
+
+[Install]
+WantedBy=default.target
+```
+
+- create the file ```.config/systemd/user/gobcron.timer``` :
+```
+[Unit]
+Description=A nightly 22:00 benchmark run of goblint SV-Comp
+
+[Timer]
+OnCalendar=Mon-Sun *-*-* 22:00:00
+Unit=gobcron.service
+
+[Install]
+WantedBy=default.target
+```
+
+- enable the timer and service:
+```
+systemctl --user enable gobcron.service
+systemctl --user enable gobcron.timer
+systemctl --user start gobcron.timer
+systemctl --user list-timers
+```
+- you can manually trigger the gobcron job by
+
+```
+systemd-run --user --on-calendar="2025-01-30 20:01:35" cd gobcron;bin/run.sh
+systemctl --user start gobcron
+```
+
+## Legacy: Anchoring in the crontab
 start your crontab editor with ```crontab -e``` and enter a line like:
 ```
 # m h  dom mon dow   command
