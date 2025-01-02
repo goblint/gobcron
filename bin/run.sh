@@ -56,10 +56,12 @@ function conditionalcompile () {
     local upstreamhash; upstreamhash=$(repoversion)
     DEBUG echo "localhash: $localhash, upstreamhash: $upstreamhash"
     if [ "$localhash" == "$upstreamhash" ]; then
-        echo "no changes in repository since last time, skipping compilation!";
+        DEBUG echo "no changes in repository since last time, skipping compilation!";
+        return 0
     else
         #from library.sh
         compile
+        return 1
     fi
 }
 
@@ -111,11 +113,17 @@ function main () {
 
     DEBUG echo "basedir is: $basedir"
 
-    local localhash; localhash=$(repoversion)
-    local upstreamhash; upstreamhash=$(currentversion)
+    local localhash; localhash=$(currentversion)
+    local upstreamhash; upstreamhash=$(repoversion)
 
-
-    [[ "$FORCECOMPILE" != "true" ]] && conditionalcompile
+    # exit if $FORCECOMPILE is not set and there are no changes in the repository
+    if [[ "$FORCECOMPILE" != "true" ]]; then
+        if conditionalcompile; then
+            echo "No changes in the repository and FORCECOMPILE is not set. Exiting."
+            exit 0
+        fi
+    fi
+    #[[ "$FORCECOMPILE" != "true" ]] && conditionalcompile
 
     # skip if goblint is already running
     goblintjobs=$(ps -eadf| grep "./goblint " | wc -l)
