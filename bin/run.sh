@@ -116,6 +116,11 @@ function main () {
     local localhash; localhash=$(currentversion)
     local upstreamhash; upstreamhash=$(repoversion)
 
+    # skip if gobcron is already active
+    exec 100>/tmp/gobcron.flock || exit 1
+    flock -n 100 || { echo "gobcron is already running, skipping!"; exit 1; }
+    trap "rm -f /tmp/gobcron.flock" EXIT
+
     # exit if $FORCECOMPILE is not set and there are no changes in the repository
     if [[ "$FORCECOMPILE" != "true" ]]; then
         if conditionalcompile; then
@@ -123,7 +128,6 @@ function main () {
             exit 0
         fi
     fi
-    #[[ "$FORCECOMPILE" != "true" ]] && conditionalcompile
 
     # skip if goblint is already running
     goblintjobs=$(ps -eadf| grep "./goblint " | wc -l)
