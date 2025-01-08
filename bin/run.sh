@@ -13,19 +13,21 @@ FORCECOMPILE="false"
 SKIPREPORT="false"
 DISABLEZULIP="false"
 CONFFILE="conf/gobcron.user.conf"
+ENQUEUE=" -n "
 shopt -s extglob
 
-VALID_ARGS=$(getopt -o e,h,c: --long help,explain,skipreport,skipchangecheck,disablezulip,conf: -- "$@")
+VALID_ARGS=$(getopt -o e,h,c,q: --long help,explain,enqueue,skipreport,skipchangecheck,disablezulip,conf: -- "$@")
 
 function helpme {
     echo "usage: $0 [options]" 
     echo "options:"
     echo "  -h                  --help             : show this help"
     echo "  -e                  --explain          : print the actual commands that will be executed"
+    echo "  -q                  --enqueue          : enqueue this run for later execution"
     echo "                      --skipreport       : do not perform the report"
     echo "                      --skipchangecheck  : do not perform the changecheck"
     echo "                      --disablezulip     : STDOUT instead of zulip"
-    echo "  -c [FILE.json]      --conf [FILE.json] : provide a specifice config file"
+    echo "  -c [FILE.json]      --conf [FILE.json] : provide a specific config file"
 
 }
 
@@ -118,7 +120,7 @@ function main () {
 
     # skip if gobcron is already active
     exec 100>/tmp/gobcron.flock || exit 1
-    flock -n 100 || { echo "gobcron is already running, skipping!"; exit 1; }
+    flock "$ENQUEUE" 100 || { echo "gobcron is already running, skipping!"; exit 1; }
     trap "rm -f /tmp/gobcron.flock" EXIT
 
     # exit if $FORCECOMPILE is not set and there are no changes in the repository
@@ -218,6 +220,10 @@ while [ : ]; do
         echo "updated config temporarily with '$2', resulting into:"
         conf
         shift 2
+        ;;
+    -q | --enqueue)
+        ENQUEUE=" "
+        shift
         ;;
     -e | --explain)
         FORCERUN="true"

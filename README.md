@@ -93,7 +93,7 @@ myserver:/home/huber/gobcron$ bin/run.sh --conf mygobcron.json --disablezulip --
 ## Working in a gobcron folder with provided tools
 
 
-### configuration topics
+### configuration issues
 
 You may view and/or alter the current default configuration, including gobcron.user.json
 ```bash

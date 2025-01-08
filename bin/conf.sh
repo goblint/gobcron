@@ -15,12 +15,13 @@ function helpme {
     echo "usage: $0 [options]" 
     echo "options:"
     echo "  -h                  --help             : show this help"
+    echo "  -c [FILE.json]      --conf [FILE.json] : interpret the configuration based on file FILE.json"
     echo "  -a                  --all              : get complete configuration as it is in memory" 
     echo "  -g key              --get key          : get the value of a configuration key from memory"
     echo "  -s key=value        --set key=value    : set the value of a configuration key temporarily during this bash session"
 }
 
-VALID_ARGS=$(getopt -o ahg:s: --long all,help,get:,set: -- "$@")
+VALID_ARGS=$(getopt -o ahg:s:c: --long all,help,get:,set:,conf: -- "$@")
 if [[ $? -ne 0 ]]; then
     exit 1;
 fi
@@ -30,6 +31,12 @@ while [ : ]; do
   case "$1" in
     -g | --get)
         conf "$2"
+        shift 2
+        ;;
+    -c | --conf)
+        CONFFILE="$2"
+        source lib/conf.sh
+        updateconfigwithfile "$2"
         shift 2
         ;;
     -a | --all)
