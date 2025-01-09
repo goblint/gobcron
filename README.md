@@ -74,7 +74,7 @@ and review/modify ```conf/gobcron.user.json``` to your satisfaction. All non-men
 ```
 - get inspired by other options from [gobcron.json](conf/gobcron.json)
 
-## Running once
+# Running once
 
 check your config first:
 ```bash
@@ -89,6 +89,22 @@ or start a custom run with parameters obtained via `bin/run.sh -h`:
 ```bash
 myserver:/home/huber/gobcron$ bin/run.sh --conf mygobcron.json --disablezulip --skipchangecheck
 ```
+
+# Running in sequence
+
+A sequence of comparable runs can now be efficiently chained by waiting on the lockfile with gobcron's ```bin/run.sh -q``` parameter. This makes most sense, if combined with several custom user configurations
+loaded via ```bin/run.sh -c conf/gobcron.tagname.json```. For example:
+
+```bash
+# check the individual configurations via the conf.sh tool:
+myserver:/home/huber/gobcron$ bin/conf.sh -c conf/gobcron.baseline.json -a
+myserver:/home/huber/gobcron$ bin/conf.sh -c conf/gobcron.baseline.json -a
+
+# start the individual runs one after the other; I recommend doing that inside a detached screen environment
+myserver:/home/huber/gobcron$ screen -dm bash -c "bin/run.sh -c conf/gobcron.baseline.json     "
+myserver:/home/huber/gobcron$ screen -dm bash -c "bin/run.sh -q -c conf/gobcron.newfeature.json"
+```
+Now, the baseline run starts and takes the lock, until its execution finished, and newfeature then directly takes over and starts the benchmark run it has been waiting for. Wrapping the calls in screen will make it possible for you to inspect progress of each benchmark, should you be interested in that. As soon as each benchmark is terminated, the screen closes, though.
 
 ## Working in a gobcron folder with provided tools
 
@@ -119,6 +135,7 @@ myserver:/home/huber/gobcron$ bin/bigcomparison.sh -t tag1 -t tag2 -t tag3
 
 If you have configured your configration with a valid zulip bot, you may send messages to the zulip id of your choice via ```bin/zulip.sh [ID] "My message"```
 
+# Running regularly
 ## systemd for regularly scheduled execution
 
 You can also use systemd's timer units for a scheduled run:
