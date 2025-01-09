@@ -98,7 +98,7 @@ loaded via ```bin/run.sh -c conf/gobcron.tagname.json```. For example:
 ```bash
 # check the individual configurations via the conf.sh tool:
 myserver:/home/huber/gobcron$ bin/conf.sh -c conf/gobcron.baseline.json -a
-myserver:/home/huber/gobcron$ bin/conf.sh -c conf/gobcron.baseline.json -a
+myserver:/home/huber/gobcron$ bin/conf.sh -c conf/gobcron.newfeature.json -a
 
 # start the individual runs one after the other; I recommend doing that inside a detached screen environment
 myserver:/home/huber/gobcron$ screen -dm bash -c "bin/run.sh -c conf/gobcron.baseline.json     "
