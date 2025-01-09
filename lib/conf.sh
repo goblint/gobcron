@@ -13,7 +13,7 @@ function DEBUG () {
 
 function initconf () {
     local base=$1
-    if [ ! -f "$base"/conf/gobcron.user.json ] ; then touch "$base"/conf/gobcron.user.json ; fi
+    if [ ! -f "$base"/conf/gobcron.user.json ] ; then touch "$base"/conf/gobcron.user.json ; echo "{ }" > "$base"/conf/gobcron.user.json ; fi
     GOBCRON_CONFIG=$(jq '.[0] * .[1]' -s <(sed 's#^\s*//.*##' "$base"/conf/gobcron.json) <(sed 's#^\s*//.*##' "$base"/conf/gobcron.user.json) | jq .)
     DEBUG echo "GOBCRON_CONFIG: $GOBCRON_CONFIG"
 }
