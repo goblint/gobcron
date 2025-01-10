@@ -16,7 +16,7 @@ CONFFILE="conf/gobcron.user.conf"
 ENQUEUE=" -n "
 shopt -s extglob
 
-VALID_ARGS=$(getopt -o e,h,c,q: --long help,explain,enqueue,skipreport,skipchangecheck,disablezulip,conf: -- "$@")
+VALID_ARGS=$(getopt -o e,h,c:,q --long help,explain,enqueue,skipreport,skipchangecheck,disablezulip,conf: -- "$@")
 
 function helpme {
     echo "usage: $0 [options]" 
@@ -92,11 +92,16 @@ function whatwillhappen () {
         $basedir/$(conf "instance.analyzerdir")/$(conf "instance.benchconf")"
 
     echo -e "benchmark command is: $benchexeccommand"
-    who="$(conf "zulip.mode")"
-    if [ "$who" == "stream" ]; then
-        echo -e "results are communicated via zulip bot $(conf "zulip.bot.email") to stream $(conf "zulip.stream")"
+
+    if [ "$DISABLEZULIP" == "true" ]; then
+        echo -e "parameter --disablezulip is set, so gobcron will not communicate via zulip"
     else
-        echo -e "results are communicated via zulip bot $(conf "zulip.bot.email") to user $(conf "zulip.mode")"
+        who="$(conf "zulip.mode")"
+        if [ "$who" == "stream" ]; then
+            echo -e "results are communicated via zulip bot $(conf "zulip.bot.email") to stream $(conf "zulip.stream")"
+        else
+            echo -e "results are communicated via zulip bot $(conf "zulip.bot.email") to user $(conf "zulip.mode")"
+        fi
     fi
     upload="$(conf "upload.protocol")"
     if [ "$upload" == "webdav" ]; then
@@ -104,8 +109,23 @@ function whatwillhappen () {
     else
         echo -e "results are not uploaded"
     fi
-    flock -n -x /tmp/gobcron.flock true || echo "currently, lock /tmp/gobcron.flock is taken from process with PID $(cat /tmp/gobcron.flock), so gobcron will not run now"
     
+    if [ "$FORCECOMPILE" == "true" ]; then
+        echo -e "parameter --skipchangecheck is set, so gobcron will compile the analyzer"
+    fi
+
+    if [ "$SKIPREPORT" == "true" ]; then
+        echo -e "parameter --skipreport is set, so gobcron will not perform the report"
+    fi
+
+    if [ "$ENQUEUE" == " -n " ]; then
+        echo -e "parameter --enqueue is not set, so gobcron will terminate if lock /tmp/gobcron.flock is taken"
+    else
+        echo -e "parameter --enqueue is set, so gobcron will run as soon as the lock /tmp/gobcron.flock is free"
+    fi
+    flock -n -x /tmp/gobcron.flock true || echo "currently, lock /tmp/gobcron.flock is taken by process with PID $(cat /tmp/gobcron.flock), so gobcron will not run now"
+
+
 }
 
 function main () {
