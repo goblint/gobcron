@@ -104,7 +104,7 @@ function whatwillhappen () {
         echo -e "parameter --skipreport is set, so gobcron will not perform the report"
     fi
 
-    if [ "$ENQUEUE" == " -n " ]; then
+    if [ "$ENQUEUE" == "-n" ]; then
         echo -e "parameter --enqueue is not set, so gobcron will terminate if lock /tmp/gobcron.flock is taken"
     else
         echo -e "parameter --enqueue is set, so gobcron will run as soon as the lock /tmp/gobcron.flock is free"
@@ -240,7 +240,7 @@ while [ : ]; do
         shift 2
         ;;
     -q | --enqueue)
-        ENQUEUE="-e"
+        ENQUEUE="-e "
         shift
         ;;
     -e | --explain)
