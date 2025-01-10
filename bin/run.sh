@@ -25,7 +25,7 @@ function helpme {
     echo "  -e                  --explain          : print the actual commands that will be executed"
     echo "  -q                  --enqueue          : enqueue this run for later execution"
     echo "                      --skipreport       : do not perform the report"
-    echo "                      --skipchangecheck  : do not perform the changecheck"
+    echo "                      --skipchangecheck  : run the analyzer, even though result/current has the latest commit id"
     echo "                      --disablezulip     : STDOUT instead of zulip"
     echo "  -c [FILE.json]      --conf [FILE.json] : provide a specific config file"
 
@@ -50,20 +50,6 @@ function zulip () {
         for recipient in "${recipients[@]}"; do
             zulipmessage "$recipient" "$message"
         done
-    fi
-}
-
-function conditionalcompile () {
-    local localhash; localhash=$(currentversion)
-    local upstreamhash; upstreamhash=$(repoversion)
-    DEBUG echo "localhash: $localhash, upstreamhash: $upstreamhash"
-    if [ "$localhash" == "$upstreamhash" ]; then
-        DEBUG echo "no changes in repository since last time, skipping compilation!";
-        return 0
-    else
-        #from library.sh
-        compile
-        return 1
     fi
 }
 
@@ -146,15 +132,20 @@ function main () {
 
     DEBUG echo "basedir is: $basedir"
 
-    local localhash; localhash=$(currentversion)
-    local upstreamhash; upstreamhash=$(repoversion)
+    local currenthash;  currenthash=$(currentversion) # version in results/current
+    local upstreamhash; upstreamhash=$(repoversion)   # version in repo
+    local analyzerhash; analyzerhash=$(localversion)  # version in analyzer
 
 
-    # exit if $FORCECOMPILE is not set and there are no changes in the repository
-    if [[ "$FORCECOMPILE" != "true" ]]; then
-        if conditionalcompile; then
-            echo "No changes in the repository and FORCECOMPILE is not set. Exiting."
+    if [[ "$FORCECOMPILE" == "true" ]]; then
+        compile
+    else
+        # check if there are changes between the repository version and the results/current version
+        if [[ "$currenthash" == "$upstreamhash" ]]; then
+            echo "No difference between the repository and the run in $base/$(conf "instance.resultsdir") skipping execution!";
             exit 0
+        else
+            compile
         fi
     fi
 
@@ -175,7 +166,7 @@ function main () {
     commitinfo out
 
 
-    zulip "$(conf server.user)@$(conf server.name) started a $(conf instance.tag) sv-comp run for commit $upstreamhash [differing from $localhash](https://github.com/goblint/analyzer/compare/$localhash...$upstreamhash) at $benchstarttime."
+    zulip "$(conf server.user)@$(conf server.name) started a $(conf instance.tag) sv-comp run for commit $upstreamhash [differing from $currenthash](https://github.com/goblint/analyzer/compare/$currenthash...$upstreamhash) at $benchstarttime."
     zulip "$out"
 
     # relocate goblint-nightly.template.xml to the correct folder on this server

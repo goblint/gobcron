@@ -45,7 +45,6 @@ currentversion () {
 
 # obtain most recent goblint analyzer commits & compile
 compile () {
-    if [[ "$(localversion)" == "$(repoversion)" ]]; then echo "skipping compilation, since local $(localversion) is same as repo version $(repoversion)"; return 0; fi
     local base; base="$(conf "instance.basedir")"
     local analyzerdir; analyzerdir=$(conf "instance.analyzerdir")
     cd "$base"
