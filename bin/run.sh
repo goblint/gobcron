@@ -13,7 +13,7 @@ FORCECOMPILE="false"
 SKIPREPORT="false"
 DISABLEZULIP="false"
 CONFFILE="conf/gobcron.user.conf"
-ENQUEUE=" -n "
+ENQUEUE="-n"
 shopt -s extglob
 
 VALID_ARGS=$(getopt -o e,h,c:,q --long help,explain,enqueue,skipreport,skipchangecheck,disablezulip,conf: -- "$@")
@@ -240,7 +240,7 @@ while [ : ]; do
         shift 2
         ;;
     -q | --enqueue)
-        ENQUEUE=" "
+        ENQUEUE="-e"
         shift
         ;;
     -e | --explain)
