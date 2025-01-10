@@ -102,7 +102,7 @@ myserver:/home/huber/gobcron$ bin/conf.sh -c conf/gobcron.newfeature.json -a
 
 # start the individual runs one after the other; I recommend doing that inside a detached screen environment
 myserver:/home/huber/gobcron$ screen -dm bash -c "bin/run.sh -c conf/gobcron.baseline.json     "
-myserver:/home/huber/gobcron$ screen -dm bash -c "bin/run.sh -q -c conf/gobcron.newfeature.json"
+myserver:/home/huber/gobcron$ screen -dm bash -c "bin/run.sh -q --skipchangecheck -c conf/gobcron.newfeature.json"
 ```
 Now, the baseline run starts and takes the lock, until its execution finished, and newfeature then directly takes over and starts the benchmark run it has been waiting for. Wrapping the calls in screen will make it possible for you to inspect progress of each benchmark, should you be interested in that. As soon as each benchmark is terminated, the screen closes, though.
 

@@ -104,12 +104,23 @@ function whatwillhappen () {
     else
         echo -e "results are not uploaded"
     fi
+    flock -n -x /tmp/gobcron.flock true || echo "currently, lock /tmp/gobcron.flock is taken from process with PID $(cat /tmp/gobcron.flock), so gobcron will not run now"
+    
 }
 
 function main () {
     #################################### start the actual program ###################################
     basedir="$(conf "instance.basedir")"
     cd "$basedir"
+
+    # skip if gobcron is already active
+    flock -n -x /tmp/gobcron.flock true || echo "waiting to acquire lock /tmp/gobcron.flock from process with PID $(cat /tmp/gobcron.flock)"
+    exec 100>/tmp/gobcron.flock || exit 1
+    flock "$ENQUEUE" 100 || { echo "gobcron is already running, skipping!"; exit 1; }
+    trap "rm -f /tmp/gobcron.flock" EXIT
+    echo "lock acquired"
+    echo "$$" > /tmp/gobcron.flock
+
     benchstarttime=$(date +%H:%M)
     benchstartseconds=$(date +%s)
 
@@ -118,10 +129,6 @@ function main () {
     local localhash; localhash=$(currentversion)
     local upstreamhash; upstreamhash=$(repoversion)
 
-    # skip if gobcron is already active
-    exec 100>/tmp/gobcron.flock || exit 1
-    flock "$ENQUEUE" 100 || { echo "gobcron is already running, skipping!"; exit 1; }
-    trap "rm -f /tmp/gobcron.flock" EXIT
 
     # exit if $FORCECOMPILE is not set and there are no changes in the repository
     if [[ "$FORCECOMPILE" != "true" ]]; then
