@@ -6,7 +6,7 @@ a process to regularly run a [benchexec](https://github.com/sosy-lab/benchexec)-
 ## Installation
 ```bash
 sudo add-apt-repository ppa:sosy-lab/benchmarking
-sudo apt install make gcc-multilib benchexec jq grep sed gawk git curl node-json5 opam autoconf libgmp-dev libmpfr-dev pkg-config
+sudo apt install pv make gcc-multilib benchexec jq grep sed gawk git curl node-json5 opam autoconf libgmp-dev libmpfr-dev pkg-config
 git clone https://github.com/goblint/gobcron.git
 cd gobcron
 ```
@@ -106,35 +106,6 @@ myserver:/home/huber/gobcron$ screen -S newfeature -dm bash -c "bin/run.sh -q --
 ```
 Now, the baseline run starts and takes the lock, until its execution finished, and newfeature then directly takes over and starts the benchmark run it has been waiting for. Wrapping the calls in screen will make it possible for you to inspect progress of each benchmark, should you be interested in that. As soon as each benchmark is terminated, the screen closes, though.
 
-## Working in a gobcron folder with provided tools
-
-
-### configuration issues
-
-You may view and/or alter the current default configuration, including gobcron.user.json
-```bash
-myserver:/home/huber/gobcron$ bin/conf.sh -s instance.basedir=/home/huber -a
-```
-and eventually play with configurations via `-g` and `-s`.
-
-### create comparison tables 
-
-You may revisit, which results are available under which tag names, and then create a set of comparison tables between exactly these benchmark run results.
-```bash
-myserver:/home/huber/gobcron$ bin/bigcomparison.sh -l
-available tags:
-    [TAG] ............................................ [DIRECTORY]
-    tag3 ............................................. ( results/current )
-    tag2 ............................................. ( results/old.1 )
-    tag4 ............................................. ( results/old.2 )
-    tag1 ............................................. ( results/old.3 )
-myserver:/home/huber/gobcron$ bin/bigcomparison.sh -t tag1 -t tag2 -t tag3
-```
-
-## sending zulip messages from command line or scripts
-
-If you have configured your configration with a valid zulip bot, you may send messages to the zulip id of your choice via ```bin/zulip.sh [ID] "My message"```
-
 # Running regularly
 ## systemd for regularly scheduled execution
 
@@ -189,3 +160,40 @@ start your crontab editor with ```crontab -e``` and enter a line like:
 
 ```
 in order to start the nightly run at 22:05
+
+
+# Miscellaneous 
+
+### status of the current run
+
+You may get an idea of the progress of the current benchmark by checking
+```bash
+myserver:/home/huber/gobcron$ bin/progress.sh
+```
+
+### configuration issues
+
+You may view and/or alter the current default configuration, including gobcron.user.json
+```bash
+myserver:/home/huber/gobcron$ bin/conf.sh -s instance.basedir=/home/huber -a
+```
+and eventually play with configurations via `-g` and `-s`.
+
+### create comparison tables 
+
+You may revisit, which results are available under which tag names, and then create a set of comparison tables between exactly these benchmark run results.
+```bash
+myserver:/home/huber/gobcron$ bin/bigcomparison.sh -l
+available tags:
+    [TAG] ............................................ [DIRECTORY]
+    tag3 ............................................. ( results/current )
+    tag2 ............................................. ( results/old.1 )
+    tag4 ............................................. ( results/old.2 )
+    tag1 ............................................. ( results/old.3 )
+myserver:/home/huber/gobcron$ bin/bigcomparison.sh -t tag1 -t tag2 -t tag3
+```
+
+## sending zulip messages from command line or scripts
+
+If you have configured your configration with a valid zulip bot, you may send messages to the zulip id of your choice via ```bin/zulip.sh [ID] "My message"```
+
