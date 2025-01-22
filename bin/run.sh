@@ -240,7 +240,7 @@ while [ : ]; do
         shift 2
         ;;
     -q | --enqueue)
-        ENQUEUE="-e "
+        ENQUEUE="-e"
         shift
         ;;
     -e | --explain)
