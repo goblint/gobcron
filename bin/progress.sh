@@ -23,8 +23,7 @@ function main {
     
 
     flock -n -x /tmp/gobcron.flock true || echo "currently, lock /tmp/gobcron.flock is taken by process with PID $(cat /tmp/gobcron.flock)"
-    local gobpid; gobpid=$(cat /tmp/gobcron.flock)
-    local gobbase; gobbase=$(ps -eadf | grep benchexec | grep "$gobpid"| tr -s ' '| rev | cut -f 1 -d " " | rev | xargs dirname)    
+    local gobbase; gobbase=$(ps -eadf | grep benchexec | tr -s ' '| rev | cut -f 1 -d " " | rev | xargs dirname | head -n 1)    
     local gobtag; gobtag=$(cat "$gobbase/results/current/tag")
 
     echo "$progress% progressed for tag $gobtag from $gobbase"
