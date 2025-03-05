@@ -128,9 +128,9 @@ function main () {
     echo "$$" > /tmp/gobcron.flock
 
     # maintain a webserver for status information in the background during the run
-    local web;
-    web=$(./bin/webstatus.sh &)
-    trap "kill $web" EXIT
+    #local web;
+    #web=$(./bin/webstatus.sh &)
+    #trap "kill $web" EXIT
 
     benchstarttime=$(date +%H:%M)
     benchstartseconds=$(date +%s)
