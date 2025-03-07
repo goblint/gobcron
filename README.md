@@ -74,6 +74,8 @@ and review/modify ```conf/gobcron.user.json``` to your satisfaction. All non-men
 ```
 - get inspired by other options from [gobcron.json](conf/gobcron.json)
 
+- the popular ```benchconf``` parameter specifies a conf.json parameter file to be used during all the goblint runs in your benchmark. Its addressed relative to the analyzer directory
+
 # Running once
 
 check your config first:
