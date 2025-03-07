@@ -64,7 +64,7 @@
         "resultsdir": "results",
         "commitsdir": "commits",
         "analyzerdir": "analyzer",
-        // currently not used:
+        // .json for goblint analyzer; path relative to analyzer-dir
         "benchconf": "conf/svcomp25.json",
         "benchmark": "nightly.xml"
     }
