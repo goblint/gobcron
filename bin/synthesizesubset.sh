@@ -99,6 +99,40 @@ function performsynth () {
             fi
         done
         rm -f svcomp.*.set
+
+# filter the unknowns for true verdicts -- these are the only ones, that we can even succeed with
+        for file in "$tagname"-unknown-*.set; do
+            if [[ -f "$file" ]]; then
+                catname=$(echo "$file" | sed 's/.*-\(SV-COMP.*\)\.set/\1/')
+                touch "$file.trueverdict"
+                rm -rf "$file.trueverdict"
+                echo "  $catname: $file"
+                for line in $(cat "$file"); do
+                    line="/home/goblint/sv-benchmarks/c/$line"
+                    if [[ $(grep "verdict: true" "$line" | tr ':' ' ' | awk '{print $1}' | head -n 1 | wc -l) -ne 0 ]]; then
+                        echo "$line" >> "$file.trueverdict"
+                    fi
+                done
+            fi
+        done
+
+# filter the TIMEOUTS for true verdicts -- these are the only ones, that we can even succeed with
+        for file in "$tagname"-TIMEOUT-*.set; do
+            if [[ -f "$file" ]]; then
+                catname=$(echo "$file" | sed 's/.*-\(SV-COMP.*\)\.set/\1/')
+                touch "$file.trueverdict"
+                rm -rf "$file.trueverdict"
+                echo "  $catname: $file"
+                for line in $(cat "$file"); do
+                    line="/home/goblint/sv-benchmarks/c/$line"
+                    if [[ $(grep "verdict: true" "$line" | tr ':' ' ' | awk '{print $1}' | head -n 1 | wc -l) -ne 0 ]]; then
+                        echo "$line" >> "$file.trueverdict"
+                    fi
+                done
+            fi
+        done
+
+
 # uncomment the following lines to print the runtime information for each category
 #        for file in "$tagname"-true-*.set; do
 #            if [[ -f "$file" ]]; then
