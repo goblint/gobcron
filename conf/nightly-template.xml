@@ -6,114 +6,111 @@
 
   SVBENCHMARKOPTIONS
 
-  <rundefinition name="SV-COMP25_unreach-call">
-    <tasks name="ReachSafety-Arrays">
+  <rundefinition name="SV-COMP26_unreach-call">
+    <tasks name="C.unreach-call.Arrays">
       <includesfile>SVBENCHMARKPREFIX/c/Arrays.set</includesfile>
       <propertyfile>SVBENCHMARKPREFIX/c/properties/unreach-call.prp</propertyfile>
     </tasks>
-    <tasks name="ReachSafety-BitVectors">
+    <tasks name="C.unreach-call.BitVectors">
       <includesfile>SVBENCHMARKPREFIX/c/BitVectors.set</includesfile>
       <propertyfile>SVBENCHMARKPREFIX/c/properties/unreach-call.prp</propertyfile>
     </tasks>
-    <tasks name="ReachSafety-ControlFlow">
+    <tasks name="C.unreach-call.ControlFlow">
       <includesfile>SVBENCHMARKPREFIX/c/ControlFlow.set</includesfile>
+      <includesfile>SVBENCHMARKPREFIX/c/Sanity.set</includesfile>
       <propertyfile>SVBENCHMARKPREFIX/c/properties/unreach-call.prp</propertyfile>
     </tasks>
-    <tasks name="ReachSafety-ECA">
+    <tasks name="C.unreach-call.ECA">
       <includesfile>SVBENCHMARKPREFIX/c/ECA.set</includesfile>
       <propertyfile>SVBENCHMARKPREFIX/c/properties/unreach-call.prp</propertyfile>
     </tasks>
-    <tasks name="ReachSafety-Floats">
+    <tasks name="C.unreach-call.Floats">
       <includesfile>SVBENCHMARKPREFIX/c/Floats.set</includesfile>
       <propertyfile>SVBENCHMARKPREFIX/c/properties/unreach-call.prp</propertyfile>
     </tasks>
-    <tasks name="ReachSafety-Heap">
+    <tasks name="C.unreach-call.Heap">
       <includesfile>SVBENCHMARKPREFIX/c/Heap.set</includesfile>
       <includesfile>SVBENCHMARKPREFIX/c/LinkedLists.set</includesfile>
       <propertyfile>SVBENCHMARKPREFIX/c/properties/unreach-call.prp</propertyfile>
     </tasks>
-    <tasks name="ReachSafety-Loops">
+    <tasks name="C.unreach-call.Loops">
       <includesfile>SVBENCHMARKPREFIX/c/Loops.set</includesfile>
       <includesfile>SVBENCHMARKPREFIX/c/VerifyThis-Loops.set</includesfile>
       <propertyfile>SVBENCHMARKPREFIX/c/properties/unreach-call.prp</propertyfile>
     </tasks>
-    <tasks name="ReachSafety-ProductLines">
+    <tasks name="C.unreach-call.ProductLines">
       <includesfile>SVBENCHMARKPREFIX/c/ProductLines.set</includesfile>
       <propertyfile>SVBENCHMARKPREFIX/c/properties/unreach-call.prp</propertyfile>
     </tasks>
-    <tasks name="ReachSafety-Recursive">
+    <tasks name="C.unreach-call.Recursive">
       <includesfile>SVBENCHMARKPREFIX/c/Recursive.set</includesfile>
       <includesfile>SVBENCHMARKPREFIX/c/VerifyThis-Recursive.set</includesfile>
       <propertyfile>SVBENCHMARKPREFIX/c/properties/unreach-call.prp</propertyfile>
     </tasks>
-    <tasks name="ReachSafety-Sequentialized">
+    <tasks name="C.unreach-call.Sequentialized">
       <includesfile>SVBENCHMARKPREFIX/c/Sequentialized.set</includesfile>
       <propertyfile>SVBENCHMARKPREFIX/c/properties/unreach-call.prp</propertyfile>
     </tasks>
-    <tasks name="ReachSafety-XCSP">
+    <tasks name="C.unreach-call.XCSP">
       <includesfile>SVBENCHMARKPREFIX/c/XCSP.set</includesfile>
       <propertyfile>SVBENCHMARKPREFIX/c/properties/unreach-call.prp</propertyfile>
     </tasks>
-    <tasks name="ReachSafety-Combinations">
+    <tasks name="C.unreach-call.Combinations">
       <includesfile>SVBENCHMARKPREFIX/c/Combinations.set</includesfile>
       <propertyfile>SVBENCHMARKPREFIX/c/properties/unreach-call.prp</propertyfile>
     </tasks>
-    <tasks name="ReachSafety-Hardware">
+    <tasks name="C.unreach-call.Hardware">
       <includesfile>SVBENCHMARKPREFIX/c/Hardware.set</includesfile>
       <propertyfile>SVBENCHMARKPREFIX/c/properties/unreach-call.prp</propertyfile>
     </tasks>
-    <tasks name="ReachSafety-Hardness">
+    <tasks name="C.unreach-call.Hardness">
       <includesfile>SVBENCHMARKPREFIX/c/Hardness.set</includesfile>
       <propertyfile>SVBENCHMARKPREFIX/c/properties/unreach-call.prp</propertyfile>
     </tasks>
-    <tasks name="ReachSafety-Fuzzle">
-      <includesfile>SVBENCHMARKPREFIX/c/Fuzzle.set</includesfile>
-      <propertyfile>SVBENCHMARKPREFIX/c/properties/unreach-call.prp</propertyfile>
-    </tasks>
 
-    <tasks name="ConcurrencySafety-Main">
+    <tasks name="C.unreach-call.Concurrency">
       <includesfile>SVBENCHMARKPREFIX/c/Concurrency.set</includesfile>
       <propertyfile>SVBENCHMARKPREFIX/c/properties/unreach-call.prp</propertyfile>
     </tasks>
 
-    <tasks name="SoftwareSystems-AWS-C-Common-ReachSafety">
+    <tasks name="C.unreach-call.SoftwareSystems-AWS-C-Common">
       <includesfile>SVBENCHMARKPREFIX/c/SoftwareSystems-AWS-C-Common.set</includesfile>
       <propertyfile>SVBENCHMARKPREFIX/c/properties/unreach-call.prp</propertyfile>
     </tasks>
-    <tasks name="SoftwareSystems-DeviceDriversLinux64-ReachSafety">
+    <tasks name="C.unreach-call.SoftwareSystems-DeviceDriversLinux64">
       <includesfile>SVBENCHMARKPREFIX/c/SoftwareSystems-DeviceDriversLinux64.set</includesfile>
       <excludesfile>SVBENCHMARKPREFIX/c/SoftwareSystems-DeviceDriversLinux64Large.set</excludesfile>
       <propertyfile>SVBENCHMARKPREFIX/c/properties/unreach-call.prp</propertyfile>
     </tasks>
-    <tasks name="SoftwareSystems-DeviceDriversLinux64Large-ReachSafety">
+    <tasks name="C.unreach-call.SoftwareSystems-DeviceDriversLinux64Large">
       <includesfile>SVBENCHMARKPREFIX/c/SoftwareSystems-DeviceDriversLinux64Large.set</includesfile>
       <propertyfile>SVBENCHMARKPREFIX/c/properties/unreach-call.prp</propertyfile>
     </tasks>
-    <tasks name="SoftwareSystems-Other-ReachSafety">
+    <tasks name="C.unreach-call.SoftwareSystems-Other">
       <includesfile>SVBENCHMARKPREFIX/c/SoftwareSystems-coreutils.set</includesfile>
       <includesfile>SVBENCHMARKPREFIX/c/SoftwareSystems-BusyBox.set</includesfile>
       <includesfile>SVBENCHMARKPREFIX/c/SoftwareSystems-OpenBSD.set</includesfile>
       <propertyfile>SVBENCHMARKPREFIX/c/properties/unreach-call.prp</propertyfile>
     </tasks>
-    <tasks name="SoftwareSystems-uthash-ReachSafety">
+    <tasks name="C.unreach-call.SoftwareSystems-uthash">
       <includesfile>SVBENCHMARKPREFIX/c/SoftwareSystems-uthash.set</includesfile>
       <propertyfile>SVBENCHMARKPREFIX/c/properties/unreach-call.prp</propertyfile>
     </tasks>
-    <tasks name="SoftwareSystems-Intel-TDX-Module-ReachSafety">
+    <tasks name="C.unreach-call.SoftwareSystems-Intel-TDX-Module">
       <includesfile>SVBENCHMARKPREFIX/c/SoftwareSystems-Intel-TDX-Module.set</includesfile>
       <propertyfile>SVBENCHMARKPREFIX/c/properties/unreach-call.prp</propertyfile>
     </tasks>
   </rundefinition>
 
-  <rundefinition name="SV-COMP25_no-data-race">
-    <tasks name="NoDataRace-Main">
+  <rundefinition name="SV-COMP26_no-data-race">
+    <tasks name="C.no-data-race.Concurrency">
       <includesfile>SVBENCHMARKPREFIX/c/Concurrency.set</includesfile>
       <propertyfile>SVBENCHMARKPREFIX/c/properties/no-data-race.prp</propertyfile>
     </tasks>
   </rundefinition>
 
-  <rundefinition name="SV-COMP25_valid-memcleanup">
-    <tasks name="MemSafety-MemCleanup">
+  <rundefinition name="SV-COMP26_valid-memcleanup">
+    <tasks name="C.valid-memcleanup.Main">
       <includesfile>SVBENCHMARKPREFIX/c/Heap.set</includesfile>
       <includesfile>SVBENCHMARKPREFIX/c/Juliet.set</includesfile>
       <includesfile>SVBENCHMARKPREFIX/c/LinkedLists.set</includesfile>
@@ -121,66 +118,66 @@
       <includesfile>SVBENCHMARKPREFIX/c/VerifyThis-Recursive.set</includesfile>
       <propertyfile>SVBENCHMARKPREFIX/c/properties/valid-memcleanup.prp</propertyfile>
     </tasks>
-    <tasks name="SoftwareSystems-uthash-MemCleanup">
+    <tasks name="C.valid-memcleanup.SoftwareSystems-uthash">
       <includesfile>SVBENCHMARKPREFIX/c/SoftwareSystems-uthash.set</includesfile>
       <propertyfile>SVBENCHMARKPREFIX/c/properties/valid-memcleanup.prp</propertyfile>
     </tasks>
   </rundefinition>
 
-  <rundefinition name="SV-COMP25_valid-memsafety">
-    <tasks name="MemSafety-Arrays">
+  <rundefinition name="SV-COMP26_valid-memsafety">
+    <tasks name="C.valid-memsafety.Arrays">
       <includesfile>SVBENCHMARKPREFIX/c/Arrays.set</includesfile>
       <includesfile>SVBENCHMARKPREFIX/c/Heap-Termination.set</includesfile>
       <includesfile>SVBENCHMARKPREFIX/c/VerifyThis-Loops.set</includesfile>
       <includesfile>SVBENCHMARKPREFIX/c/VerifyThis-Recursive.set</includesfile>
       <propertyfile>SVBENCHMARKPREFIX/c/properties/valid-memsafety.prp</propertyfile>
     </tasks>
-    <tasks name="MemSafety-Heap">
+    <tasks name="C.valid-memsafety.Heap">
       <includesfile>SVBENCHMARKPREFIX/c/Heap.set</includesfile>
       <propertyfile>SVBENCHMARKPREFIX/c/properties/valid-memsafety.prp</propertyfile>
     </tasks>
-    <tasks name="MemSafety-LinkedLists">
+    <tasks name="C.valid-memsafety.LinkedLists">
       <includesfile>SVBENCHMARKPREFIX/c/LinkedLists.set</includesfile>
       <propertyfile>SVBENCHMARKPREFIX/c/properties/valid-memsafety.prp</propertyfile>
     </tasks>
-    <tasks name="MemSafety-Other">
+    <tasks name="C.valid-memsafety.Other">
       <includesfile>SVBENCHMARKPREFIX/c/Loops.set</includesfile>
       <includesfile>SVBENCHMARKPREFIX/c/ControlFlow.set</includesfile>
       <includesfile>SVBENCHMARKPREFIX/c/ControlFlow-Termination.set</includesfile>
       <includesfile>SVBENCHMARKPREFIX/c/Recursive.set</includesfile>
       <propertyfile>SVBENCHMARKPREFIX/c/properties/valid-memsafety.prp</propertyfile>
     </tasks>
-    <tasks name="MemSafety-Juliet">
+    <tasks name="C.valid-memsafety.Juliet">
       <includesfile>SVBENCHMARKPREFIX/c/Juliet.set</includesfile>
       <propertyfile>SVBENCHMARKPREFIX/c/properties/valid-memsafety.prp</propertyfile>
     </tasks>
 
-    <tasks name="SoftwareSystems-coreutils-MemSafety">
+    <tasks name="C.valid-memsafety.SoftwareSystems-coreutils">
       <includesfile>SVBENCHMARKPREFIX/c/SoftwareSystems-coreutils.set</includesfile>
       <propertyfile>SVBENCHMARKPREFIX/c/properties/valid-memsafety.prp</propertyfile>
     </tasks>
-    <tasks name="SoftwareSystems-DeviceDriversLinux64-MemSafety">
+    <tasks name="C.valid-memsafety.SoftwareSystems-DeviceDriversLinux64">
       <includesfile>SVBENCHMARKPREFIX/c/SoftwareSystems-DeviceDriversLinux64.set</includesfile>
       <propertyfile>SVBENCHMARKPREFIX/c/properties/valid-memsafety.prp</propertyfile>
     </tasks>
-    <tasks name="SoftwareSystems-Other-MemSafety">
+    <tasks name="C.valid-memsafety.SoftwareSystems-Other">
       <includesfile>SVBENCHMARKPREFIX/c/SoftwareSystems-BusyBox.set</includesfile>
       <includesfile>SVBENCHMARKPREFIX/c/SoftwareSystems-OpenBSD.set</includesfile>
       <propertyfile>SVBENCHMARKPREFIX/c/properties/valid-memsafety.prp</propertyfile>
     </tasks>
-    <tasks name="SoftwareSystems-uthash-MemSafety">
+    <tasks name="C.valid-memsafety.SoftwareSystems-uthash">
       <includesfile>SVBENCHMARKPREFIX/c/SoftwareSystems-uthash.set</includesfile>
       <propertyfile>SVBENCHMARKPREFIX/c/properties/valid-memsafety.prp</propertyfile>
     </tasks>
 
-    <tasks name="ConcurrencySafety-MemSafety">
+    <tasks name="C.valid-memsafety.Concurrency">
       <includesfile>SVBENCHMARKPREFIX/c/Concurrency.set</includesfile>
       <propertyfile>SVBENCHMARKPREFIX/c/properties/valid-memsafety.prp</propertyfile>
     </tasks>
   </rundefinition>
 
-  <rundefinition name="SV-COMP25_no-overflow">
-    <tasks name="NoOverflows-Main">
+  <rundefinition name="SV-COMP26_no-overflow">
+    <tasks name="C.no-overflow.Main">
       <includesfile>SVBENCHMARKPREFIX/c/Arrays.set</includesfile>
       <includesfile>SVBENCHMARKPREFIX/c/BitVectors.set</includesfile>
       <includesfile>SVBENCHMARKPREFIX/c/BitVectors-Termination.set</includesfile>
@@ -201,44 +198,44 @@
       <includesfile>SVBENCHMARKPREFIX/c/SoftwareSystems-DeviceDriversLinux64.set</includesfile>
       <propertyfile>SVBENCHMARKPREFIX/c/properties/no-overflow.prp</propertyfile>
     </tasks>
-    <tasks name="NoOverflows-Juliet">
+    <tasks name="C.no-overflow.Juliet">
       <includesfile>SVBENCHMARKPREFIX/c/Juliet.set</includesfile>
       <propertyfile>SVBENCHMARKPREFIX/c/properties/no-overflow.prp</propertyfile>
     </tasks>
 
-    <tasks name="SoftwareSystems-BusyBox-NoOverflows">
+    <tasks name="C.no-overflow.SoftwareSystems-BusyBox">
       <includesfile>SVBENCHMARKPREFIX/c/SoftwareSystems-BusyBox.set</includesfile>
       <propertyfile>SVBENCHMARKPREFIX/c/properties/no-overflow.prp</propertyfile>
     </tasks>
-    <tasks name="SoftwareSystems-coreutils-NoOverflows">
+    <tasks name="C.no-overflow.SoftwareSystems-coreutils">
       <includesfile>SVBENCHMARKPREFIX/c/SoftwareSystems-coreutils.set</includesfile>
       <propertyfile>SVBENCHMARKPREFIX/c/properties/no-overflow.prp</propertyfile>
     </tasks>
-    <tasks name="SoftwareSystems-uthash-NoOverflows">
+    <tasks name="C.no-overflow.SoftwareSystems-uthash">
       <includesfile>SVBENCHMARKPREFIX/c/SoftwareSystems-uthash.set</includesfile>
       <propertyfile>SVBENCHMARKPREFIX/c/properties/no-overflow.prp</propertyfile>
     </tasks>
 
-    <tasks name="ConcurrencySafety-NoOverflows">
+    <tasks name="C.no-overflow.Concurrency">
       <includesfile>SVBENCHMARKPREFIX/c/Concurrency.set</includesfile>
       <propertyfile>SVBENCHMARKPREFIX/c/properties/no-overflow.prp</propertyfile>
     </tasks>
   </rundefinition>
 
-  <rundefinition name="SV-COMP25_termination">
-    <tasks name="Termination-BitVectors">
+  <rundefinition name="SV-COMP26_termination">
+    <tasks name="C.termination.BitVectors">
       <includesfile>SVBENCHMARKPREFIX/c/BitVectors-Termination.set</includesfile>
       <propertyfile>SVBENCHMARKPREFIX/c/properties/termination.prp</propertyfile>
     </tasks>
-    <tasks name="Termination-MainControlFlow">
+    <tasks name="C.termination.MainControlFlow">
       <includesfile>SVBENCHMARKPREFIX/c/ControlFlow-Termination.set</includesfile>
       <propertyfile>SVBENCHMARKPREFIX/c/properties/termination.prp</propertyfile>
     </tasks>
-    <tasks name="Termination-MainHeap">
+    <tasks name="C.termination.MainHeap">
       <includesfile>SVBENCHMARKPREFIX/c/Heap-Termination.set</includesfile>
       <propertyfile>SVBENCHMARKPREFIX/c/properties/termination.prp</propertyfile>
     </tasks>
-    <tasks name="Termination-Other">
+    <tasks name="C.termination.Other">
       <includesfile>SVBENCHMARKPREFIX/c/Arrays.set</includesfile>
       <includesfile>SVBENCHMARKPREFIX/c/BitVectors.set</includesfile>
       <includesfile>SVBENCHMARKPREFIX/c/ControlFlow.set</includesfile>
@@ -249,14 +246,45 @@
       <includesfile>SVBENCHMARKPREFIX/c/ProductLines.set</includesfile>
       <includesfile>SVBENCHMARKPREFIX/c/Recursive.set</includesfile>
       <includesfile>SVBENCHMARKPREFIX/c/Sequentialized.set</includesfile>
-      <includesfile>SVBENCHMARKPREFIX/c/SoftwareSystems-uthash.set</includesfile>
       <propertyfile>SVBENCHMARKPREFIX/c/properties/termination.prp</propertyfile>
     </tasks>
-    <tasks name="SoftwareSystems-DeviceDriversLinux64-Termination">
+    <tasks name="C.termination.SoftwareSystems-DeviceDriversLinux64">
       <includesfile>SVBENCHMARKPREFIX/c/SoftwareSystems-DeviceDriversLinux64.set</includesfile>
+      <propertyfile>SVBENCHMARKPREFIX/c/properties/termination.prp</propertyfile>
+    </tasks>
+    <tasks name="C.termination.SoftwareSystems-uthash">
+      <includesfile>SVBENCHMARKPREFIX/c/SoftwareSystems-uthash.set</includesfile>
       <propertyfile>SVBENCHMARKPREFIX/c/properties/termination.prp</propertyfile>
     </tasks>
   </rundefinition>
 
+  <rundefinition name="SV-COMP26_unreach-call_demo">
+    <tasks name="C.unreach-call.Huawei-Concurrency-Challenges">
+      <includesfile>SVBENCHMARKPREFIX/c/Huawei-Concurrency-Challenges.set</includesfile>
+      <propertyfile>SVBENCHMARKPREFIX/c/properties/unreach-call.prp</propertyfile>
+    </tasks>
+
+  </rundefinition>
+
+  <rundefinition name="SV-COMP26_no-data-race_demo">
+    <tasks name="C.no-data-race.Huawei-Concurrency-Challenges">
+      <includesfile>SVBENCHMARKPREFIX/c/Huawei-Concurrency-Challenges.set</includesfile>
+      <propertyfile>SVBENCHMARKPREFIX/c/properties/no-data-race.prp</propertyfile>
+    </tasks>
+  </rundefinition>
+
+  <rundefinition name="SV-COMP26_valid-memsafety_demo">
+    <tasks name="C.valid-memsafety.Huawei-Concurrency-Challenges">
+      <includesfile>SVBENCHMARKPREFIX/c/Huawei-Concurrency-Challenges.set</includesfile>
+      <propertyfile>SVBENCHMARKPREFIX/c/properties/valid-memsafety.prp</propertyfile>
+    </tasks>
+  </rundefinition>
+
+  <rundefinition name="SV-COMP26_no-overflow_demo">
+    <tasks name="C.no-overflow.Huawei-Concurrency-Challenges">
+      <includesfile>SVBENCHMARKPREFIX/c/Huawei-Concurrency-Challenges.set</includesfile>
+      <propertyfile>SVBENCHMARKPREFIX/c/properties/no-overflow.prp</propertyfile>
+    </tasks>
+  </rundefinition>
 
 </benchmark>
