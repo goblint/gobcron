@@ -186,6 +186,7 @@ function main () {
     portfoliomode=$(conf "instance.portfoliomode")
     if [ "$portfoliomode" == "true" ]; then
         confs="<option name=\"--portfolio-conf\">$(conf "instance.portfolio")</option>"
+        ln -sf "$basedir/analyzer/scripts/sv-comp/goblint_runner.py" "$basedir/analyzer"
     else
         confs="$(./bin/conf.sh -G instance.benchconf | jq -r 'map("<option name=\"--conf\">"+.+"</option> ") | add')"
     fi
