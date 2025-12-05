@@ -182,7 +182,7 @@ function main () {
     zulip "$out"
 
     # relocate goblint-nightly.template.xml to the correct folder on this server
-    rm -f "$basedir/nightly.xml"
+    rm -f "$basedir/run.xml"
     portfoliomode=$(conf "instance.portfoliomode")
     if [ "$portfoliomode" == "true" ]; then
         confs="<option name=\"--portfolio-conf\">$(conf "instance.portfolio")</option>"
@@ -190,7 +190,7 @@ function main () {
     else
         confs="$(./bin/conf.sh -G instance.benchconf | jq -r 'map("<option name=\"--conf\">"+.+"</option> ") | add')"
     fi
-    cat "$basedir/conf/nightly-template.xml" | sed "s#SVBENCHMARKPREFIX#$(conf "instance.svbenchdir")#" | sed "s#SVBENCHMARKOPTIONS#$(conf "instance.options") $confs#" > "$basedir/nightly.xml"
+    cat "$basedir/conf/nightly-template.xml" | sed "s#SVBENCHMARKPREFIX#$(conf "instance.svbenchdir")#" | sed "s#SVBENCHMARKOPTIONS#$(conf "instance.options") $confs#" > "$basedir/run.xml"
 
     # perform the actual benchmark
     cd "$basedir/$(conf "instance.analyzerdir")"
@@ -202,9 +202,9 @@ function main () {
         --walltimelimit "$(conf "instance.walltimelimit")" \
         --name          "$(conf "instance.tag")" \
         --no-hyperthreading \
-        "$basedir/nightly.xml"
+        "$basedir/run.xml"
 
-    rm -f "$basedir/nightly.xml"
+    rm -f "$basedir/run.xml"
     rm -f "$basedir/$(conf "instance.analyzerdir")/conf.json"
     cd -
 
