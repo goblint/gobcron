@@ -82,7 +82,7 @@ function whatwillhappen () {
         --walltimelimit $(conf "instance.walltimelimit") 
         --name          $(conf "instance.tag") 
         --no-hyperthreading
-        $basedir/nightly.xml"
+        $basedir/run.xml"
 
     echo -e "benchmark command is: $benchexeccommand"
 
@@ -205,7 +205,6 @@ function main () {
         "$basedir/run.xml"
 
     rm -f "$basedir/run.xml"
-    rm -f "$basedir/$(conf "instance.analyzerdir")/conf.json"
     cd -
 
     # compare the result to the previous one/ compareto
