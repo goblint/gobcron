@@ -81,8 +81,8 @@ function whatwillhappen () {
         --timelimit     $(conf "instance.timelimit") 
         --walltimelimit $(conf "instance.walltimelimit") 
         --name          $(conf "instance.tag") 
-        --no-hyperthreading 
-        $basedir/$(conf "instance.analyzerdir")/$(conf "instance.benchconf")"
+        --no-hyperthreading
+        $basedir/nightly.xml"
 
     echo -e "benchmark command is: $benchexeccommand"
 
@@ -190,8 +190,6 @@ function main () {
         confs="$(./bin/conf.sh -G instance.benchconf | jq -r 'map("<option name=\"--conf\">"+.+"</option> ") | add')"
     fi
     cat "$basedir/conf/nightly-template.xml" | sed "s#SVBENCHMARKPREFIX#$(conf "instance.svbenchdir")#" | sed "s#SVBENCHMARKOPTIONS#$(conf "instance.options") $confs#" > "$basedir/nightly.xml"
-    
-    exit 0
 
     # perform the actual benchmark
     cd "$basedir/$(conf "instance.analyzerdir")"
