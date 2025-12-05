@@ -4,7 +4,6 @@
 
   <resultfiles>**/witness.*</resultfiles>
 
-  <option name="--conf">conf.json</option>
   SVBENCHMARKOPTIONS
 
   <rundefinition name="SV-COMP25_unreach-call">

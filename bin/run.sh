@@ -66,7 +66,14 @@ function whatwillhappen () {
     echo -e "tag will be: $(conf "instance.tag")"
     echo -e "  -> result goes to $basedir/$(conf "instance.resultsdir")/$(date +%Y%m%d-%H%M)--COMMITID-$(conf "instance.tag")"
     repocommand="git clone --branch $(conf "instance.branch") $(conf "instance.gitrepo") && git checkout $(conf "instance.commit")"
-    echo -e "reference git repo will be:\n  $repocommand" 
+    echo -e "reference git repo will be:\n  $repocommand"
+    portfoliomode=$(conf "instance.portfoliomode")
+    if [ "$portfoliomode" == "true" ]; then
+        confs="<option name=\"--portfolio-conf\">$(conf "instance.portfolio")</option>"
+    else
+        confs="$(./bin/conf.sh -G instance.benchconf | jq -r 'map("<option name=\"--conf\">"+.+"</option> ") | add')"
+    fi
+    echo -e "configuration string will be: \n $confs "
     benchexeccommand="\n  benchexec --read-only-dir / --overlay-dir . --overlay-dir /home 
         --outputpath    $basedir/$(conf "instance.resultsdir")/current/ 
         --memorylimit   $(conf "server.memory") 
@@ -176,8 +183,15 @@ function main () {
 
     # relocate goblint-nightly.template.xml to the correct folder on this server
     rm -f "$basedir/nightly.xml"
-    cat "$basedir/conf/nightly-template.xml" | sed "s#SVBENCHMARKPREFIX#$(conf "instance.svbenchdir")#" | sed "s#SVBENCHMARKOPTIONS#$(conf "instance.options")#" > "$basedir/nightly.xml"
-    cp  "$basedir/$(conf "instance.analyzerdir")/$(conf "instance.benchconf")" "$basedir/$(conf "instance.analyzerdir")/conf.json"
+    portfoliomode=$(conf "instance.portfoliomode")
+    if [ "$portfoliomode" == "true" ]; then
+        confs="<option name=\"--portfolio-conf\">$(conf "instance.portfolio")</option>"
+    else
+        confs="$(./bin/conf.sh -G instance.benchconf | jq -r 'map("<option name=\"--conf\">"+.+"</option> ") | add')"
+    fi
+    cat "$basedir/conf/nightly-template.xml" | sed "s#SVBENCHMARKPREFIX#$(conf "instance.svbenchdir")#" | sed "s#SVBENCHMARKOPTIONS#$(conf "instance.options") $confs#" > "$basedir/nightly.xml"
+    
+    exit 0
 
     # perform the actual benchmark
     cd "$basedir/$(conf "instance.analyzerdir")"

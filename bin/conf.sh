@@ -18,10 +18,11 @@ function helpme {
     echo "  -c [FILE.json]      --conf [FILE.json] : interpret the configuration based on file FILE.json"
     echo "  -a                  --all              : get complete configuration as it is in memory" 
     echo "  -g key              --get key          : get the value of a configuration key from memory"
+    echo "  -G key              --getset key       : get the value of a configuration key as an array from memory"
     echo "  -s key=value        --set key=value    : set the value of a configuration key temporarily during this bash session"
 }
 
-VALID_ARGS=$(getopt -o ahg:s:c: --long all,help,get:,set:,conf: -- "$@")
+VALID_ARGS=$(getopt -o ahg:G:s:c: --long all,help,get,getset:,set:,conf: -- "$@")
 if [[ $? -ne 0 ]]; then
     exit 1;
 fi
@@ -31,6 +32,10 @@ while [ : ]; do
   case "$1" in
     -g | --get)
         conf "$2"
+        shift 2
+        ;;
+    -G | --getset)
+        confset "$2"
         shift 2
         ;;
     -c | --conf)

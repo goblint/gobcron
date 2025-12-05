@@ -65,7 +65,9 @@
         "commitsdir": "commits",
         "analyzerdir": "analyzer",
         // .json for goblint analyzer; path relative to analyzer-dir
-        "benchconf": "conf/svcomp25.json",
+        "benchconf": ["conf/svcomp26/common.json", "conf/svcomp26/level01.json", "conf/svcomp26/verify.json"],
+        "portfolio": "conf/svcomp26/seq.txt",
+        "portfoliomode": false,
         "benchmark": "nightly.xml"
     }
 }

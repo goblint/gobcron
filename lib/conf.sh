@@ -35,5 +35,11 @@ function updateconfigwithfile () {
 # conf echoes the query value $1=query
 function conf () {
     [[ -z "$GOBCRON_CONFIG" ]] && echo "Error: GOBCRON_CONFIG is not initialized -- call initconf [basedir]" && return 1
-    jq ."$1" <<< "$GOBCRON_CONFIG" | sed -e 's/^"//' -e 's/"$//'
+    jq ."$1" <<< "$GOBCRON_CONFIG" | tr -d '"'
+}
+
+# conf echoes the query value $1=query
+function confset () {
+    [[ -z "$GOBCRON_CONFIG" ]] && echo "Error: GOBCRON_CONFIG is not initialized -- call initconf [basedir]" && return 1
+    jq ."$1"' | if type=="array" then . else [.] end' <<< "$GOBCRON_CONFIG" 
 }
