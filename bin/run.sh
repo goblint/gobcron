@@ -69,11 +69,11 @@ function whatwillhappen () {
     echo -e "reference git repo will be:\n  $repocommand"
     portfoliomode=$(conf "instance.portfoliomode")
     if [ "$portfoliomode" == "true" ]; then
-        confs="<option name=\"--portfolio-conf\">$(conf "instance.portfolio")</option>"
+        confs="Portfolio: $(conf "instance.portfolio")"
     else
-        confs="$(./bin/conf.sh -G instance.benchconf | jq -r 'map("<option name=\"--conf\">"+.+"</option> ") | add')"
+        confs="Configs: $(./bin/conf.sh -G instance.benchconf | jq -r 'map("<option name=\"--conf\">"+.+"</option> ") | add')"
     fi
-    echo -e "configuration string will be: \n $confs "
+    echo -e "$confs"
     benchexeccommand="\n  benchexec --read-only-dir / --overlay-dir . --overlay-dir /home 
         --outputpath    $basedir/$(conf "instance.resultsdir")/current/ 
         --memorylimit   $(conf "server.memory") 

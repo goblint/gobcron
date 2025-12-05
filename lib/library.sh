@@ -229,7 +229,13 @@ function runinfo() {
     local -n output=$1
     local runsets; runsets=$(cat "$base/$resultsdir/current/$benchmarkname"*.txt| head -n 30 | grep "run sets:" | awk '{ $1=""; $2=""; print $0 }')
     local runs; runs=$(cat "$base/$resultsdir/current/$benchmarkname"*.txt| head -n 14 | grep "parallel runs:" | awk '{ $1=""; $2=""; print $0 }')
-    local config; config=$(conf "instance.benchconf")
+    local portfoliomode=$(conf "instance.portfoliomode")
+    if [ "$portfoliomode" == "true" ]; then
+        local confs="Portfolio: $(conf "instance.portfolio")"
+    else
+        local confs="Configs: $(./bin/conf.sh -G instance.benchconf | jq -r 'map("<option name=\"--conf\">"+.+"</option> ") | add')"
+    fi
+    local config; config=$confs
     local gitinfo; gitinfo="$(conf "instance.gitrepo") [$(conf "instance.branch")] @ $(conf "instance.commit")"
     local memory; memory=$(cat "$base/$resultsdir/current/$benchmarkname"*.txt| head -n 14 | grep "memory:" | head -n 1 | awk '{ $1=""; $2=""; print $0 }')
     local time; time=$(cat "$base/$resultsdir/current/$benchmarkname"*.txt| head -n 30 | grep "time:" | awk '{ $1=""; $2=""; print $0 }')
