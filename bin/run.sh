@@ -218,6 +218,14 @@ function main () {
     runinfo rundata
 
     scoring
+    zulip "Confirmed true results per portfolio level:"
+    zulip "$(< "$current/totalscore.confirmedtrue.md")"
+    zulip "Resource overconsumption per portfolio level:"
+    zulip "$(< "$current/totalscore.outofresources.md")"
+    zulip "Score per meta-category:"
+    zulip "$(< "$current/finalscorespercat.md")"
+    zulip "Overall score per portfolio level:"
+    zulip "$(< "$current/totalscore.md")"
 
     uploadfile="$(pushtoweb)"
 

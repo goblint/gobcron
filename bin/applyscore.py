@@ -1,7 +1,7 @@
 # /// script
 # requires-python = ">=3.12"
 # dependencies = [
-#     "pandas==3.0.0rc0", # this version tells why merge validation fails
+#     "pandas==3.0.0rc0" # this version tells why merge validation fails
 # ]
 # ///
 
@@ -31,7 +31,9 @@ data_true = data[(data["verdict"] == "true") & (data["result"] == "correct")]
 data_levels = data_true["level"].groupby(data["level"]).count().rename("count")
 data_cumlevels = data_levels.cumsum().rename("cumulativecount")
 data_levels_pct = (data_levels / data_levels.sum() * 100).rename("percent")
-print(pd.concat([data_cumlevels, data_levels, data_levels_pct], axis=1))
+tmp=pd.concat([data_cumlevels, data_levels, data_levels_pct], axis=1)
+print(tmp)
+tmp.to_markdown(args.totalscore.replace(".csv",".confirmedtrue.md"))
 
 
 print()
@@ -39,15 +41,16 @@ print()
 def is_ro(s):
     return s.startswith("TIMEOUT") or s.startswith("OUT OF MEMORY")
 
-print("resource out (TIMEOUT, OUT OF MEMORY):")
+print("out of resources (TIMEOUT, OUT OF MEMORY):")
 data_ro = data[data["verdict"].map(is_ro)]
 
 # breaking resource out verdicts down by levels, if there are any
 data_ro_levels = data_ro["levelstarted"].groupby(data["levelstarted"]).count().rename("count")
 data_ro_cumlevels = data_ro_levels.cumsum().rename("cumulativecount")
 data_ro_levels_pct = (data_ro_levels / data_ro_levels.sum() * 100).rename("percent")
-print(pd.concat([data_ro_cumlevels, data_ro_levels, data_ro_levels_pct], axis=1))
-
+tmp=pd.concat([data_ro_cumlevels, data_ro_levels, data_ro_levels_pct], axis=1)
+print(tmp)
+tmp.to_markdown(args.totalscore.replace(".csv",".outofresources.md"))
 
 print("Overall score:")
 data_score = data #[data["status"] == "true"]
@@ -72,8 +75,10 @@ data_weights_levels_pct = (data_weights_levels / data_weights_levels.sum() * 100
 print(pd.concat([data_weights_cumlevels, data_weights_levels, data_weights_levels_pct], axis=1))
 tmp=pd.concat([data_weights_cumlevels, data_weights_levels, data_weights_levels_pct], axis=1)
 tmp.to_csv(args.totalscore, index_label="level")
+tmp.to_markdown(args.totalscore.replace(".csv",".md"))
 
 # print(data_weights_true)
 data_weights_meta = data_weights_true[data_weights_true["result"] == "correct"].groupby(data_weights_true["metacategory"])["weight"].sum().round().astype(int)*2 #assuming only trues
 print(data_weights_meta)
 data_weights_meta.to_csv(args.outpercat, header=["metacategory_score"])
+data_weights_meta.to_markdown(args.outpercat.replace(".csv",".md"))

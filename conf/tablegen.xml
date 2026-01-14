@@ -1,0 +1,25 @@
+<?xml version="1.0" ?>
+<!DOCTYPE table PUBLIC "+//IDN sosy-lab.org//DTD BenchExec table 1.10//EN" "https://www.sosy-lab.org/benchexec/table-1.10.dtd">
+<table>
+
+  <union title="2025-12-11-final">
+    <!-- Explicit list of all non-demo rundefinitions. Otherwise demo rundefinitions give lots of duplicate task warnings. -->
+    <result filename="../results/current/*.results.SV-COMP*_unreach-call.*.xml.bz2"/>
+    <result filename="../results/current/*.results.SV-COMP*_no-overflow.*.xml.bz2"/>
+    <result filename="../results/current/*.results.SV-COMP*_termination.*.xml.bz2"/>
+    <result filename="../results/current/*.results.SV-COMP*_valid-memcleanup.*.xml.bz2"/>
+    <result filename="../results/current/*.results.SV-COMP*_valid-memsafety.*.xml.bz2"/>
+    <result filename="../results/current/*.results.SV-COMP*_no-data-race.*.xml.bz2"/>
+
+    <column title="status"/>
+    <column title="category"/>
+    <column title="cputime" />
+    <column title="memory" />
+    <column title="varcount">vars: (?P&lt;last&gt;\d+), evals: </column>
+    <column title="evalcount">vars: \d+, evals: (?P&lt;last&gt;\d+)</column>
+    <column title="level-started">Starting config \[(?P&lt;last&gt;\d+)\]</column>
+    <column title="level">Stopping portfolio sequence with verdict \[.*\] after config \[(\d+)\]</column>
+
+  </union>
+
+</table>

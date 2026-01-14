@@ -238,12 +238,12 @@ function scoring () {
     echo -e "ymlfile\tproperty\texpected\tverdict\tresult\tcputime\tmemory\tvarcount\tevalcount\tlevelstarted\tlevel" | cat - "$currentdir/$tag.table.csv" > "$currentdir/$tag.table.tmp.csv"
     mv "$currentdir/$tag.table.tmp.csv" "$currentdir/$tag.table.csv"
     echo " generated results CSV $currentdir/$tag.table.csv"
-    python3 bin/computeweights.py \
+    .venv/bin/python3 bin/computeweights.py \
         --svbenchpath "$(conf "instance.svbenchdir")" \
         --tag "$(conf "instance.goblintxmltag")" \
         --outcsv "$currentdir/weights.csv"
     echo " generated weights CSV $currentdir/weights.csv"
-    python3 bin/applyscore.py \
+    .venv/bin/python3 bin/applyscore.py \
         --tablecsv "$currentdir/$tag.table.csv" \
         --weightscsv "$currentdir/weights.csv" \
         --outcsv "$currentdir/finalscores.csv" \

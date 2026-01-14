@@ -20,6 +20,11 @@ for lib in $list; do
 done
 echo -e '\E[32m'"\033[1m[ok]\033[0m"
 
+printf "setting up python environment... "
+python3 -m venv .venv
+.venv/bin/pip install --proxy  proxy.cit.tum.de:8080 pandas requests xmltodict tabulate pyyaml
+echo -e '\E[32m'"\033[1m[ok]\033[0m"
+
 # build the minimal gobcron.user.json
 init () {
     local acc
