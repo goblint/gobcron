@@ -99,7 +99,7 @@ function pushtoweb () {
     local current="$(cat "$base/$resultsdir/current/commithash")"
     local tag="$(cat "$base/$resultsdir/current/tag")"
     local uploadfile="$tag-$date--$current.tar.gz"
-    tar czf "/tmp/$uploadfile" "$base/$resultsdir/current/diff2previous" "$base/$resultsdir"/current/*.logfiles.zip 2>/dev/null
+    tar czf "/tmp/$uploadfile" "$base/$resultsdir/current/diff2previous" "$base/$resultsdir"/current/*.logfiles.zip "$base/$resultsdir"/current/*.csv 2>/dev/null
     if [ "$protocol" == "webdav" ]; then
         # currently only webdav/https is supported
         if [ -z "$user" ]; then # anonymous upload
@@ -147,7 +147,7 @@ function compareresults () {
     echo "|---|---|---|---|---|---|---" >> "$gobcron"
     DEBUG echo "using tmp file $gobcron"
     #retrieve taskgroups
-    declare -a runsets=($(cat "$comparison1/$benchmarkname"*.txt| head -n 30 | grep "run sets:" | awk '{ $1=""; $2=""; print $0 }' | tr "," " "))
+    declare -a runsets=($(cat "$comparison1/"*results.txt| head -n 30 | grep "run sets:" | awk '{ $1=""; $2=""; print $0 }' | tr "," " "))
     for taskgroup in "${runsets[@]}"
     do
 	    DEBUG echo "trying  with taskgroup $taskgroup"
@@ -260,8 +260,8 @@ function runinfo() {
     local server; server="$(conf "server.user")@$(conf "server.name")"
     local benchmarkname; benchmarkname=$(conf "instance.benchmark" | xargs -n1 basename -s .xml)
     local -n output=$1
-    local runsets; runsets=$(cat "$base/$resultsdir/current/$benchmarkname"*.txt| head -n 30 | grep "run sets:" | awk '{ $1=""; $2=""; print $0 }')
-    local runs; runs=$(cat "$base/$resultsdir/current/$benchmarkname"*.txt| head -n 14 | grep "parallel runs:" | awk '{ $1=""; $2=""; print $0 }')
+    local runsets; runsets=$(cat "$base/$resultsdir/current/"*results.txt| head -n 30 | grep "run sets:" | awk '{ $1=""; $2=""; print $0 }')
+    local runs; runs=$(cat "$base/$resultsdir/current/"*results.txt| head -n 14 | grep "parallel runs:" | awk '{ $1=""; $2=""; print $0 }')
     local portfoliomode=$(conf "instance.portfoliomode")
     if [ "$portfoliomode" == "true" ]; then
         local confs="Portfolio: $(conf "instance.portfolio")"
@@ -270,8 +270,8 @@ function runinfo() {
     fi
     local config; config=$confs
     local gitinfo; gitinfo="$(conf "instance.gitrepo") [$(conf "instance.branch")] @ $(conf "instance.commit")"
-    local memory; memory=$(cat "$base/$resultsdir/current/$benchmarkname"*.txt| head -n 14 | grep "memory:" | head -n 1 | awk '{ $1=""; $2=""; print $0 }')
-    local time; time=$(cat "$base/$resultsdir/current/$benchmarkname"*.txt| head -n 30 | grep "time:" | awk '{ $1=""; $2=""; print $0 }')
+    local memory; memory=$(cat "$base/$resultsdir/current/"*results.txt| head -n 14 | grep "memory:" | head -n 1 | awk '{ $1=""; $2=""; print $0 }')
+    local time; time=$(cat "$base/$resultsdir/current/"*results.txt| head -n 30 | grep "time:" | awk '{ $1=""; $2=""; print $0 }')
     local revision; revision=$(cat "$base/$resultsdir/current/commithash")
     local date; date=$(cat "$base/$resultsdir/current/date")
     local path; path="sftp://$server$base/$(conf "instance.commitsdir")/$date--$revision-$(cat "$base/$resultsdir/current/tag")"
