@@ -219,6 +219,39 @@ function commitinfo () {
     done
 }
 
+function scoring () {
+    local base; base="$(conf "instance.basedir")"
+    local resultsdir; resultsdir=$(conf "instance.resultsdir")
+    local currentdir; currentdir="$base/$resultsdir/current"
+    local tag; tag=$(conf "instance.tag")
+    local benchmarkname; benchmarkname=$(conf "instance.benchmark" | xargs -n1 basename -s .xml)
+    table-generator --all-columns -q \
+        -f csv \
+        -x "conf/tablegen.xml" \
+        -o "$currentdir" \
+        -n "$tag"
+    #remove the first two lines of results/current/$tag.table.csv
+    mv "$currentdir/$tag.table.csv" "$currentdir/$tag.table.tmp.csv"
+    tail -n +4 "$currentdir/$tag.table.tmp.csv" > "$currentdir/$tag.table.csv"
+    rm -f "$currentdir/$tag.table.tmp.csv"
+    #prepend header line to the csv
+    echo -e "ymlfile\tproperty\texpected\tverdict\tresult\tcputime\tmemory\tvarcount\tevalcount\tlevelstarted\tlevel" | cat - "$currentdir/$tag.table.csv" > "$currentdir/$tag.table.tmp.csv"
+    mv "$currentdir/$tag.table.tmp.csv" "$currentdir/$tag.table.csv"
+    echo " generated results CSV $currentdir/$tag.table.csv"
+    python3 bin/computeweights.py \
+        --svbenchpath "$(conf "instance.svbenchdir")" \
+        --tag "$(conf "instance.goblintxmltag")" \
+        --outcsv "$currentdir/weights.csv"
+    echo " generated weights CSV $currentdir/weights.csv"
+    python3 bin/applyscore.py \
+        --tablecsv "$currentdir/$tag.table.csv" \
+        --weightscsv "$currentdir/weights.csv" \
+        --outcsv "$currentdir/finalscores.csv" \
+        --outpercat "$currentdir/finalscorespercat.csv" \
+        --totalscore "$currentdir/totalscore.csv"
+    echo " generated final scores CSV $currentdir/finalscores.csv"
+}
+
 # give an overview on the most important information of this benchmark run
 # parameters: $1=accumulator
 function runinfo() {

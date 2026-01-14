@@ -45,6 +45,8 @@
         "basedir": "/home/goblint/cron-job",
         // configure the directory, where the sv-benchmarks are located:
         "svbenchdir": "/home/goblint/sv-benchmarks",
+        // goblint.xml tag from the https://gitlab.com/sosy-lab/sv-comp/bench-defs repo
+        "goblintxmltag": "svcomp26-rc.1",
         // configure your preferred github URL to be benchmarked with gitrepo and branch
         "gitrepo": "https://github.com/goblint/analyzer.git",
         "branch": "master",

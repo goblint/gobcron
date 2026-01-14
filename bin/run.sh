@@ -217,6 +217,8 @@ function main () {
     #from library.sh
     runinfo rundata
 
+    scoring
+
     uploadfile="$(pushtoweb)"
 
     benchstartseconds=$((($(date +%s)-$benchstartseconds)))
