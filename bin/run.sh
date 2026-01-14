@@ -219,13 +219,13 @@ function main () {
 
     scoring
     zulip "Confirmed true results per portfolio level:"
-    zulip "$(< "$current/totalscore.confirmedtrue.md")"
+    zulip "$(< "$basedir/$(conf "instance.resultsdir")/current/totalscore.confirmedtrue.md")"
     zulip "Resource overconsumption per portfolio level:"
-    zulip "$(< "$current/totalscore.outofresources.md")"
+    zulip "$(< "$basedir/$(conf "instance.resultsdir")/current/totalscore.outofresources.md")"
     zulip "Score per meta-category:"
-    zulip "$(< "$current/finalscorespercat.md")"
+    zulip "$(< "$basedir/$(conf "instance.resultsdir")/current/finalscorespercat.md")"
     zulip "Overall score per portfolio level:"
-    zulip "$(< "$current/totalscore.md")"
+    zulip "$(< "$basedir/$(conf "instance.resultsdir")/current/totalscore.md")"
 
     uploadfile="$(pushtoweb)"
 
