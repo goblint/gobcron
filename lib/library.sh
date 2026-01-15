@@ -51,6 +51,11 @@ compile () {
     rm -rf "$analyzerdir"
     git clone --branch "$(conf "instance.branch")" "$(conf "instance.gitrepo")" "$analyzerdir"
     git -C "$analyzerdir" checkout "$(conf "instance.commit")"
+
+    checkconfig
+
+    echo "config is a valid json according to schema $base/$analyzerdir/src/config/options.schema.json"
+
     make -C "$base/$analyzerdir" setup
     make -C "$base/$analyzerdir" release
     cd -
@@ -217,6 +222,56 @@ function commitinfo () {
 	output="$output
 | commit $id | $message"
     done
+}
+
+function checkconfig () {
+    local base; base="$(conf "instance.basedir")"
+    local analyzerdir; analyzerdir=$(conf "instance.analyzerdir")
+    local mode; mode=$(conf "instance.portfoliomode")
+    if [ "$mode" == "true" ]; then # portfolio mode
+        local portfolio; portfolio=$(conf "instance.portfolio")
+        if [ -z "$portfolio" ]; then
+            echo "Error: portfolio mode is enabled but no portfolio is set in conf.sh" >&2
+            exit 1
+        fi
+        if [ ! -f "$base/$analyzerdir/$portfolio" ]; then
+            echo "Error: portfolio file $base/$analyzerdir/$portfolio does not exist" >&2
+            exit 1
+        fi
+        local configs=$(grep -v "^#" "$base/$analyzerdir/$portfolio")
+        for conf in $configs; do
+            if [[ "$conf" == "--conf" ]]; then
+                continue
+            fi
+            # check if file exists
+            if [ ! -f "$base/$analyzerdir/$conf" ]; then
+                echo "Error: portfolio config file $base/$analyzerdir/$conf does not exist" >&2
+                exit 1
+            fi
+            # check if file is valid json, correspoinding to schema analyzer/src/config/options.schema.json
+            validate-json "$base/$analyzerdir/$conf" "$base/$analyzerdir/src/config/options.schema.json"
+            if [ $? -ne 0 ]; then
+                echo "Error: portfolio config file $base/$analyzerdir/$conf is not a valid goblint option .json, and does not comply to $base/$analyzerdir/src/config/options.schema.json" >&2
+                exit 1
+            fi
+        done
+    else # not portfolio mode
+        local benchconf; benchconf=$(./bin/conf.sh -G instance.benchconf | jq -r 'map(.+" ") | add')
+        # loop over all benchconfs 
+        for conf in $benchconf; do
+            # check if file exists
+            if [ ! -f "$base/$analyzerdir/$conf" ]; then
+                echo "Error: benchconf file $base/$analyzerdir/$conf does not exist" >&2
+                exit 1
+            fi
+            # check if file is valid json, correspoinding to schema analyzer/src/config/options.schema.json
+            validate-json "$base/$analyzerdir/$conf" "$base/$analyzerdir/src/config/options.schema.json"
+            if [ $? -ne 0 ]; then
+                echo "Error: benchconf file $base/$analyzerdir/$conf is not a valid goblint option .json, and does not comply to $base/$analyzerdir/src/config/options.schema.json" >&2
+                exit 1
+            fi
+        done
+    fi
 }
 
 function scoring () {
