@@ -218,14 +218,6 @@ function main () {
     runinfo rundata
 
     scoring
-    zulip "Confirmed true results per portfolio level:"
-    zulip "$(< "$basedir/$(conf "instance.resultsdir")/current/totalscore.confirmedtrue.md")"
-    zulip "Resource overconsumption per portfolio level:"
-    zulip "$(< "$basedir/$(conf "instance.resultsdir")/current/totalscore.outofresources.md")"
-    zulip "Score per meta-category:"
-    zulip "$(< "$basedir/$(conf "instance.resultsdir")/current/finalscorespercat.md")"
-    zulip "Overall score per portfolio level:"
-    zulip "$(< "$basedir/$(conf "instance.resultsdir")/current/totalscore.md")"
 
     uploadfile="$(pushtoweb)"
 
@@ -240,6 +232,15 @@ function main () {
     fi
 
     [[ "$SKIPREPORT" != "true" ]] && (zulip "$rundata" ; zulip "$acc")
+
+    zulip "Overall score per portfolio level:"
+    zulip "$(< "$basedir/$(conf "instance.resultsdir")/current/totalscore.md")"
+    zulip "Score per meta-category:"
+    zulip "$(< "$basedir/$(conf "instance.resultsdir")/current/finalscorespercat.md")"
+    zulip "Confirmed true results per portfolio level:"
+    zulip "$(< "$basedir/$(conf "instance.resultsdir")/current/totalscore.confirmedtrue.md")"
+    zulip "Resource overconsumption per portfolio level:"
+    zulip "$(< "$basedir/$(conf "instance.resultsdir")/current/totalscore.outofresources.md")"
 
     exit 0
 }

@@ -99,7 +99,7 @@ function pushtoweb () {
     local current="$(cat "$base/$resultsdir/current/commithash")"
     local tag="$(cat "$base/$resultsdir/current/tag")"
     local uploadfile="$tag-$date--$current.tar.gz"
-    tar czf "/tmp/$uploadfile" "$base/$resultsdir/current/diff2previous" "$base/$resultsdir"/current/*.logfiles.zip "$base/$resultsdir"/current/*.csv 2>/dev/null
+    tar czf "/tmp/$uploadfile" "$base/$resultsdir/current/diff2previous" "$base/$resultsdir"/current/*.logfiles.zip "$base/$resultsdir"/current/finalscores.csv 2>/dev/null
     if [ "$protocol" == "webdav" ]; then
         # currently only webdav/https is supported
         if [ -z "$user" ]; then # anonymous upload
