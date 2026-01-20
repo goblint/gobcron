@@ -194,13 +194,15 @@ function main () {
 
     # perform the actual benchmark
     cd "$basedir/$(conf "instance.analyzerdir")"
+    LD_LIBRARY_PATH="$basedir/$(conf "instance.analyzerdir")"/local/lib \
     benchexec --read-only-dir / --overlay-dir . --overlay-dir /home \
-        --outputpath    "$basedir/$(conf "instance.resultsdir")/current/" \
-        --memorylimit   "$(conf "server.memory")" \
-        --numOfThreads  "$(conf "server.threads")" \
-        --timelimit     "$(conf "instance.timelimit")" \
-        --walltimelimit "$(conf "instance.walltimelimit")" \
-        --name          "$(conf "instance.tag")" \
+        --outputpath     "$basedir/$(conf "instance.resultsdir")/current/" \
+        --memorylimit    "$(conf "server.memory")" \
+        --numOfThreads   "$(conf "server.threads")" \
+        --tool-directory "$basedir/$(conf "instance.analyzerdir")" \
+        --timelimit      "$(conf "instance.timelimit")" \
+        --walltimelimit  "$(conf "instance.walltimelimit")" \
+        --name           "$(conf "instance.tag")" \
         --no-hyperthreading \
         "$basedir/run.xml"
 
