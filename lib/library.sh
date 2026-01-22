@@ -305,6 +305,8 @@ function scoring () {
         --outpercat "$currentdir/finalscorespercat.csv" \
         --totalscore "$currentdir/totalscore.csv"
     echo " generated final scores CSV $currentdir/finalscores.csv"
+    .venv/bin/python3 bin/stackedgraph.py "$currentdir/finalscores.csv"
+    echo " generated stacked graph $currentdir/finalscores_stackedgraph.svg"
 }
 
 # give an overview on the most important information of this benchmark run

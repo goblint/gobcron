@@ -167,10 +167,10 @@ for metacategory in categories:
         weight = "inf" if count == 0 else round(avg / count, 3)
         #print("  Category:", category, "Property:", property," count:", count, " weight:", weight)
         property = category.split(".")[1]
-        weightstable.append({'metacategory': metacategory, 'category': category,'property':property, 'taskcount': count, 'weight': weight})
+        weightstable.append({'metacategory': metacategory, 'category': category,'property':property, 'taskcount': int(count), 'weight': weight})
 
     print(" Total tasks in metacategory", metacategory, ":", catcount)
-    metacattable.append({'metacategory': metacategory, 'total_tasks': catcount})
+    metacattable.append({'metacategory': metacategory, 'total_tasks': int(catcount)})
 
 # sum of all total_tasks in metacattable
 all_metacat = sum(item['total_tasks'] for item in metacattable)
