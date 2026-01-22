@@ -13,7 +13,7 @@ def main():
         print("Usage: stackedgraph.py <csvfile>")
         exit(1)
     csvfile = sys.argv[1]
-    print(f"Processing CSV file: {csvfile}")
+
     #prepare dataframe:
     df = []
     # use pandas to read csv file 
@@ -52,12 +52,11 @@ def main():
     else:
         plt.ylabel('True Verdicts')
         plt.title('Stacked True Verdicts over Time by Portfolio Level')
-    outputfile = Path(csvfile).stem + "_stackedgraph.svg"
-    plt.savefig(outputfile)
-    outputfile = Path(csvfile).stem + "_stackedgraph.png"
-    plt.savefig(outputfile)
-
-
+    output_dir = Path(csvfile).parent
+    outputfile_svg = output_dir / (Path(csvfile).stem + "_stackedgraph.svg")
+    plt.savefig(outputfile_svg)
+    outputfile_png = output_dir / (Path(csvfile).stem + "_stackedgraph.png")
+    plt.savefig(outputfile_png)
 
 if __name__ == "__main__":
     main()

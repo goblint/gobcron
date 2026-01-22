@@ -22,7 +22,7 @@ echo -e '\E[32m'"\033[1m[ok]\033[0m"
 
 printf "setting up python environment... "
 python3 -m venv .venv
-.venv/bin/pip install --proxy  proxy.cit.tum.de:8080 pandas requests xmltodict tabulate pyyaml
+.venv/bin/pip install --proxy  proxy.cit.tum.de:8080 pandas requests xmltodict tabulate pyyaml matplotlib
 echo -e '\E[32m'"\033[1m[ok]\033[0m"
 
 # build the minimal gobcron.user.json
