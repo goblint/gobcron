@@ -56,7 +56,7 @@ def main():
     outputfile_svg = output_dir / (Path(csvfile).stem + "_stackedgraph.svg")
     plt.savefig(outputfile_svg)
     outputfile_png = output_dir / (Path(csvfile).stem + "_stackedgraph.png")
-    plt.savefig(outputfile_png)
+    plt.savefig(outputfile_png,dpi=300)
 
 if __name__ == "__main__":
     main()

@@ -11,6 +11,16 @@ function DEBUG () {
 
 [ -n "${GOBCRON_ZULIP}" ] && return; GOBCRON_ZULIP=0; # pragma once
 
+# upload an image/file to zulip; parameters: $1=filepath
+zulipupload () {
+    local filepath="$1"
+    local url=$(curl -X POST https://goblint.zulipchat.com/api/v1/user_uploads \
+    -u "$(conf zulip.bot.email)":"$(conf zulip.bot.apikey)" \
+    -F "filename=@${filepath}" \
+    | jq -r '.url')
+    echo "$url"
+}
+
 # send a message to our zulip chat; parameters: $1=receiver $2=message
 zulipmessage () {
     local receiver="$1"
