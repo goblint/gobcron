@@ -221,6 +221,8 @@ function main () {
 
     scoring
 
+    compare_csv_to "$basedir/$(conf "instance.resultsdir")/$(conf "instance.compareto")"
+
     uploadfile="$(pushtoweb)"
 
     benchstartseconds=$((($(date +%s)-$benchstartseconds)))

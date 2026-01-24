@@ -123,6 +123,16 @@ function pushtoweb () {
     echo "$uploadfile"
 }
 
+# compare current results to previous results
+# parameters: $1=comparetodir
+function compare_csv_to () {
+    local base; base="$(conf "instance.basedir")"
+    local resultsdir; resultsdir=$(conf "instance.resultsdir")
+    ".venv/bin/python3" bin/compare_csv.py \
+        --currentcsv "$base/$resultsdir/current" \
+        --oldcsv "$1" 
+}
+
 # compare two result folders and create a comparison table
 # parameters: $1=accumulator , $2=comparisondir1 , $3=comparisondir2
 function compareresults () {
