@@ -237,7 +237,7 @@ function main () {
 
     zulip "Overall score per portfolio level:"
     zulip "$(< "$basedir/$(conf "instance.resultsdir")/current/totalscore.md")"
-    msg=$(zulipupload ""$basedir/$(conf "instance.resultsdir")/current/finalscores_stackedgraph.png") ;
+    msg=$(zulipupload "$basedir/$(conf "instance.resultsdir")"/current/finalscores_stackedgraph.png) ;
     zulip "Final scores [stacked graph]($msg)" ;
     zulip "Score per meta-category:"
     zulip "$(< "$basedir/$(conf "instance.resultsdir")/current/finalscorespercat.md")"
