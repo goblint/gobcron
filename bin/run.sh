@@ -238,11 +238,21 @@ function main () {
     [[ "$SKIPREPORT" != "true" ]] && (zulip "$rundata" ; zulip "$acc")
 
     zulip "Overall score per portfolio level:"
-    zulip "$(< "$basedir/$(conf "instance.resultsdir")/current/totalscore.md")"
+    # if totalscore_comparison.md exists, use it, else use totalscore.md
+    if [ -f "$basedir/$(conf "instance.resultsdir")/current/totalscore_comparison.md" ]; then
+        zulip "$(< "$basedir/$(conf "instance.resultsdir")/current/totalscore_comparison.md")"
+    else
+        zulip "$(< "$basedir/$(conf "instance.resultsdir")/current/totalscore.md")"
+    fi
     msg=$(zulipupload "$basedir/$(conf "instance.resultsdir")"/current/finalscores_stackedgraph.png) ;
     zulip "Final scores [stacked graph]($msg)" ;
     zulip "Score per meta-category:"
-    zulip "$(< "$basedir/$(conf "instance.resultsdir")/current/finalscorespercat.md")"
+    # if finalscorespercat_comparison.md exists, use it, else use finalscorespercat.md
+    if [ -f "$basedir/$(conf "instance.resultsdir")/current/finalscorespercat_comparison.md" ]; then
+        zulip "$(< "$basedir/$(conf "instance.resultsdir")/current/finalscorespercat_comparison.md")"
+    else
+        zulip "$(< "$basedir/$(conf "instance.resultsdir")/current/finalscorespercat.md")"
+    fi
     zulip "Confirmed true results per portfolio level:"
     zulip "$(< "$basedir/$(conf "instance.resultsdir")/current/finalscores.confirmedtrue.md")"
     zulip "Resource overconsumption per portfolio level:"
