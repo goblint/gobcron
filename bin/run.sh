@@ -244,9 +244,9 @@ function main () {
     zulip "Score per meta-category:"
     zulip "$(< "$basedir/$(conf "instance.resultsdir")/current/finalscorespercat.md")"
     zulip "Confirmed true results per portfolio level:"
-    zulip "$(< "$basedir/$(conf "instance.resultsdir")/current/totalscore.confirmedtrue.md")"
+    zulip "$(< "$basedir/$(conf "instance.resultsdir")/current/finalscores.confirmedtrue.md")"
     zulip "Resource overconsumption per portfolio level:"
-    zulip "$(< "$basedir/$(conf "instance.resultsdir")/current/totalscore.outofresources.md")"
+    zulip "$(< "$basedir/$(conf "instance.resultsdir")/current/finalscores.outofresources.md")"
 
     exit 0
 }

@@ -33,7 +33,8 @@ data_cumlevels = data_levels.cumsum().rename("Verdicts accum.")
 data_levels_pct = (data_levels / data_levels.sum() * 100).rename("Contrib").round(2).astype(str)+" %"
 tmp=pd.concat([data_cumlevels, data_levels, data_levels_pct], axis=1)
 print(tmp)
-tmp.to_markdown(args.totalscore.replace(".csv",".confirmedtrue.md"))
+tmp.to_markdown(args.outcsv.replace(".csv",".confirmedtrue.md"))
+tmp.to_csv(args.outcsv.replace(".csv",".confirmedtrue.csv"))
 
 
 print()
@@ -50,7 +51,8 @@ data_ro_cumlevels = data_ro_levels.cumsum().rename("Exceeded Resources accum.")
 data_ro_levels_pct = (data_ro_levels / data_ro_levels.sum() * 100).rename("Contrib").round(2).astype(str)+" %"
 tmp=pd.concat([data_ro_cumlevels, data_ro_levels, data_ro_levels_pct], axis=1)
 print(tmp)
-tmp.to_markdown(args.totalscore.replace(".csv",".outofresources.md"))
+tmp.to_markdown(args.outcsv.replace(".csv",".outofresources.md"))
+tmp.to_csv(args.outcsv.replace(".csv",".outofresources.csv"))
 
 print("Overall score:")
 data_score = data #[data["status"] == "true"]
