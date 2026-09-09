@@ -49,15 +49,15 @@ compile () {
     local analyzerdir; analyzerdir=$(conf "instance.analyzerdir")
     cd "$base"
     rm -rf "$analyzerdir"
-    git clone --branch "$(conf "instance.branch")" "$(conf "instance.gitrepo")" "$analyzerdir"
-    git -C "$analyzerdir" checkout "$(conf "instance.commit")"
+    git clone --branch "$(conf "instance.branch")" "$(conf "instance.gitrepo")" "$analyzerdir" || { echo "Error: git clone of $(conf "instance.gitrepo") (branch $(conf "instance.branch")) failed" >&2; return 1; }
+    git -C "$analyzerdir" checkout "$(conf "instance.commit")" || { echo "Error: git checkout of $(conf "instance.commit") failed" >&2; return 1; }
 
-    checkconfig
+    checkconfig || return 1
 
     echo "config is a valid json according to schema $base/$analyzerdir/src/config/options.schema.json"
 
-    make -C "$base/$analyzerdir" setup
-    make -C "$base/$analyzerdir" release
+    make -C "$base/$analyzerdir" setup || { echo "Error: make setup failed" >&2; return 1; }
+    make -C "$base/$analyzerdir" release || { echo "Error: make release failed" >&2; return 1; }
     cd -
 }
 
@@ -242,11 +242,11 @@ function checkconfig () {
         local portfolio; portfolio=$(conf "instance.portfolio")
         if [ -z "$portfolio" ]; then
             echo "Error: portfolio mode is enabled but no portfolio is set in conf.sh" >&2
-            exit 1
+            return 1
         fi
         if [ ! -f "$base/$analyzerdir/$portfolio" ]; then
             echo "Error: portfolio file $base/$analyzerdir/$portfolio does not exist" >&2
-            exit 1
+            return 1
         fi
         local configs=$(grep -v "^#" "$base/$analyzerdir/$portfolio")
         for conf in $configs; do
@@ -256,13 +256,13 @@ function checkconfig () {
             # check if file exists
             if [ ! -f "$base/$analyzerdir/$conf" ]; then
                 echo "Error: portfolio config file $base/$analyzerdir/$conf does not exist" >&2
-                exit 1
+                return 1
             fi
             # check if file is valid json, correspoinding to schema analyzer/src/config/options.schema.json
-            validate-json "$base/$analyzerdir/$conf" "$base/$analyzerdir/src/config/options.schema.json"
+            check-jsonschema --schemafile "$base/$analyzerdir/src/config/options.schema.json" "$base/$analyzerdir/$conf"
             if [ $? -ne 0 ]; then
                 echo "Error: portfolio config file $base/$analyzerdir/$conf is not a valid goblint option .json, and does not comply to $base/$analyzerdir/src/config/options.schema.json" >&2
-                exit 1
+                return 1
             fi
         done
     else # not portfolio mode
@@ -272,13 +272,13 @@ function checkconfig () {
             # check if file exists
             if [ ! -f "$base/$analyzerdir/$conf" ]; then
                 echo "Error: benchconf file $base/$analyzerdir/$conf does not exist" >&2
-                exit 1
+                return 1
             fi
             # check if file is valid json, correspoinding to schema analyzer/src/config/options.schema.json
-            validate-json "$base/$analyzerdir/$conf" "$base/$analyzerdir/src/config/options.schema.json"
+            check-jsonschema --schemafile "$base/$analyzerdir/src/config/options.schema.json" "$base/$analyzerdir/$conf"
             if [ $? -ne 0 ]; then
                 echo "Error: benchconf file $base/$analyzerdir/$conf is not a valid goblint option .json, and does not comply to $base/$analyzerdir/src/config/options.schema.json" >&2
-                exit 1
+                return 1
             fi
         done
     fi

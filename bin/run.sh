@@ -53,6 +53,15 @@ function zulip () {
     fi
 }
 
+function compilebail () {
+    zulip "Compile/config-check of $(conf "instance.gitrepo") ($(conf "instance.branch") @ $(conf "instance.commit")) failed, aborting run:
+\`\`\`
+$(tail -n 15 "$compilelog")
+\`\`\`"
+    rm -f "$compilelog"
+    exit 1
+}
+
 function whatwillhappen () {
     conf
     echo ""
@@ -149,33 +158,22 @@ function main () {
     local analyzerhash; analyzerhash=$(localversion)  # version in analyzer
 
 
-    if [[ "$(conf "instance.portfoliomode")" != "true" ]]; then
-        schema="$basedir/$(conf "instance.analyzerdir")/src/config/options.schema.json"
-        invalid=""
-        while read -r benchconffile; do
-            check-jsonschema --schemafile "$schema" "$basedir/$(conf "instance.analyzerdir")/$benchconffile"
-            if [[ $? -ne 0 ]]; then
-                invalid+="  $benchconffile"$'\n'
-            fi
-        done < <(./bin/conf.sh -G instance.benchconf | jq -r '.[]')
-        if [[ -n "$invalid" ]]; then
-            zulip "Aborting run: goblint config files failed schema validation against $schema:
-$invalid"
-            exit 1
-        fi
-    fi
-
+    local compilelog; compilelog=$(mktemp)
     if [[ "$FORCECOMPILE" == "true" ]]; then
-        compile
+        compile 2>&1 | tee "$compilelog"
+        [[ ${PIPESTATUS[0]} -eq 0 ]] || compilebail
     else
         # check if there are changes between the repository version and the results/current version
         if [[ "$currenthash" == "$upstreamhash" ]]; then
             echo "No difference between the repository and the run in $base/$(conf "instance.resultsdir") skipping execution!";
+            rm -f "$compilelog"
             exit 0
         else
-            compile
+            compile 2>&1 | tee "$compilelog"
+            [[ ${PIPESTATUS[0]} -eq 0 ]] || compilebail
         fi
     fi
+    rm -f "$compilelog"
 
     # skip if goblint is already running
     goblintjobs=$(ps -eadf| grep "./goblint " | wc -l)

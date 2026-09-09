@@ -1,1 +1,6 @@
 conf/gobcron.user.json
+analyzer/
+results/
+commits/
+evaluation/
+*~
