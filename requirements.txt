@@ -1,0 +1,8 @@
+pandas
+numpy
+openpyxl
+requests
+xmltodict
+tabulate
+pyyaml
+matplotlib
