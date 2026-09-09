@@ -6,7 +6,7 @@ a process to regularly run a [benchexec](https://github.com/sosy-lab/benchexec)-
 ## Installation
 ```bash
 sudo add-apt-repository ppa:sosy-lab/benchmarking
-sudo apt install pv make gcc-multilib benchexec jq grep sed gawk git curl node-json5 opam autoconf libgmp-dev libmpfr-dev pkg-config php-json-schema python3-venv
+sudo apt install pv make gcc-multilib benchexec jq grep sed gawk git curl node-json5 opam autoconf libgmp-dev libmpfr-dev pkg-config php-json-schema python3-venv python3-check-jsonschema
 git clone https://github.com/goblint/gobcron.git
 cd gobcron
 ```

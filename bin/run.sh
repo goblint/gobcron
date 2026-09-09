@@ -149,6 +149,22 @@ function main () {
     local analyzerhash; analyzerhash=$(localversion)  # version in analyzer
 
 
+    if [[ "$(conf "instance.portfoliomode")" != "true" ]]; then
+        schema="$basedir/$(conf "instance.analyzerdir")/src/config/options.schema.json"
+        invalid=""
+        while read -r benchconffile; do
+            check-jsonschema --schemafile "$schema" "$basedir/$(conf "instance.analyzerdir")/$benchconffile"
+            if [[ $? -ne 0 ]]; then
+                invalid+="  $benchconffile"$'\n'
+            fi
+        done < <(./bin/conf.sh -G instance.benchconf | jq -r '.[]')
+        if [[ -n "$invalid" ]]; then
+            zulip "Aborting run: goblint config files failed schema validation against $schema:
+$invalid"
+            exit 1
+        fi
+    fi
+
     if [[ "$FORCECOMPILE" == "true" ]]; then
         compile
     else
