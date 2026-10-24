@@ -203,8 +203,22 @@ modify files or checkouts.
 
         # Require an existing, clean checkout before making changes.
         git(benchmarks, "rev-parse", "--show-toplevel")
-        if git(benchmarks, "status", "--porcelain"):
-            raise RuntimeError(f"Checkout has local changes: {benchmarks}")
+        # Preserve leading whitespace in Git's two status columns.
+        status = subprocess.check_output(
+            ["git", "-C", str(benchmarks), "status", "--porcelain"],
+            text=True,
+        ).rstrip()
+        if status:
+            raise SystemExit(
+                f"Cannot update: checkout has local changes: {benchmarks}\n\n"
+                f"{status}\n\n"
+                "?? = untracked file; M = modified; A = added; D = deleted.\n"
+                "The first column shows staged changes; the second shows "
+                "working-tree changes.\n"
+                "Commit or stash tracked changes, and move or stash untracked "
+                "files, then retry.\n"
+                "No benchmark checkout or configuration changes were made."
+            )
 
         commit = api_json(
             "/repository/commits/" + quote(args.ref, safe="")
