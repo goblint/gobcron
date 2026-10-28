@@ -12,6 +12,7 @@ FORCERUN="false"
 FORCECOMPILE="false"
 SKIPREPORT="false"
 DISABLEZULIP="false"
+EXPLAIN="false"
 CONFFILE="conf/gobcron.user.conf"
 ENQUEUE="-n"
 shopt -s extglob
@@ -80,7 +81,7 @@ function whatwillhappen () {
     if [ "$portfoliomode" == "true" ]; then
         confs="Portfolio: $(conf "instance.portfolio")"
     else
-        confs="Configs: $(./bin/conf.sh -G instance.benchconf | jq -r 'map("<option name=\"--conf\">"+.+"</option> ") | add')"
+        confs="Configs: $(confset "instance.benchconf" | jq -r 'map("<option name=\"--conf\">"+.+"</option> ") | add')"
     fi
     echo -e "$confs"
     benchexeccommand="\n  benchexec --read-only-dir / --overlay-dir . --overlay-dir /home 
@@ -202,7 +203,7 @@ function main () {
         confs="<option name=\"--portfolio-conf\">$(conf "instance.portfolio")</option>"
         ln -sf "$basedir/analyzer/scripts/sv-comp/goblint_runner.py" "$basedir/analyzer"
     else
-        confs="$(./bin/conf.sh -G instance.benchconf | jq -r 'map("<option name=\"--conf\">"+.+"</option> ") | add')"
+        confs="$(confset "instance.benchconf" | jq -r 'map("<option name=\"--conf\">"+.+"</option> ") | add')"
     fi
     cat "$basedir/conf/nightly-template.xml" | sed "s#SVBENCHMARKPREFIX#$(conf "instance.svbenchdir")#" | sed "s#SVBENCHMARKOPTIONS#$(conf "instance.options") $confs#" > "$basedir/run.xml"
 
@@ -302,9 +303,8 @@ while [ : ]; do
         shift
         ;;
     -e | --explain)
-        FORCERUN="true"
-        whatwillhappen
-        exit 0
+        EXPLAIN="true"
+        shift
         ;;
     --skipchangecheck)
         FORCECOMPILE="true"
@@ -328,5 +328,10 @@ while [ : ]; do
         ;;
   esac
 done
+
+if [ "$EXPLAIN" == "true" ]; then
+    whatwillhappen
+    exit 0
+fi
 
 main

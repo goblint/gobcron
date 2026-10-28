@@ -266,7 +266,7 @@ function checkconfig () {
             fi
         done
     else # not portfolio mode
-        local benchconf; benchconf=$(./bin/conf.sh -G instance.benchconf | jq -r 'map(.+" ") | add')
+        local benchconf; benchconf=$(confset "instance.benchconf" | jq -r 'map(.+" ") | add')
         # loop over all benchconfs 
         for conf in $benchconf; do
             # check if file exists
@@ -333,7 +333,7 @@ function runinfo() {
     if [ "$portfoliomode" == "true" ]; then
         local confs="Portfolio: $(conf "instance.portfolio")"
     else
-        local confs="Configs: $(./bin/conf.sh -G instance.benchconf | jq -r 'map("<option name=\"--conf\">"+.+"</option> ") | add')"
+        local confs="Configs: $(confset "instance.benchconf" | jq -r 'map("<option name=\"--conf\">"+.+"</option> ") | add')"
     fi
     local config; config=$confs
     local gitinfo; gitinfo="$(conf "instance.gitrepo") [$(conf "instance.branch")] @ $(conf "instance.commit")"

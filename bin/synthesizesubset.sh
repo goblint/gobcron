@@ -101,49 +101,59 @@ function performsynth () {
         rm -f svcomp.*.set
 
 # filter the unknowns for true verdicts -- these are the only ones, that we can even succeed with
-        for file in "$tagname"-unknown-*.set; do
-            if [[ -f "$file" ]]; then
-                catname=$(echo "$file" | sed 's/.*-\(SV-COMP.*\)\.set/\1/')
-                touch "$file.trueverdict"
-                rm -rf "$file.trueverdict"
-                echo "  $catname: $file"
-                for line in $(cat "$file"); do
-                    line="/home/goblint/sv-benchmarks/c/$line"
-                    if [[ $(grep "verdict: true" "$line" | tr ':' ' ' | awk '{print $1}' | head -n 1 | wc -l) -ne 0 ]]; then
-                        echo "$line" >> "$file.trueverdict"
-                    fi
-                done
-            fi
-        done
-
-# filter the TIMEOUTS for true verdicts -- these are the only ones, that we can even succeed with
-        for file in "$tagname"-TIMEOUT-*.set; do
-            if [[ -f "$file" ]]; then
-                catname=$(echo "$file" | sed 's/.*-\(SV-COMP.*\)\.set/\1/')
-                touch "$file.trueverdict"
-                rm -rf "$file.trueverdict"
-                echo "  $catname: $file"
-                for line in $(cat "$file"); do
-                    line="/home/goblint/sv-benchmarks/c/$line"
-                    if [[ $(grep "verdict: true" "$line" | tr ':' ' ' | awk '{print $1}' | head -n 1 | wc -l) -ne 0 ]]; then
-                        echo "$line" >> "$file.trueverdict"
-                    fi
-                done
-            fi
-        done
-
-
-# uncomment the following lines to print the runtime information for each category
-#        for file in "$tagname"-true-*.set; do
+#        for file in "$tagname"-unknown-*.set; do
 #            if [[ -f "$file" ]]; then
 #                catname=$(echo "$file" | sed 's/.*-\(SV-COMP.*\)\.set/\1/')
-#                echo "  $catname: $file"
+#                touch "$file.trueverdict"
+#                rm -rf "$file.trueverdict"
+#                echo " extracting verdicts for $catname: $file"
 #                for line in $(cat "$file"); do
-#                    line=$(basename "$line")
-#                    unzip  -p "$logfilearchive"  "$logfilearchiveprefix"/"$catname"."$line".log | grep "runtime:" | tail -n 1
+#                    line="/home/goblint/sv-benchmarks/c/$line"
+#                    if [[ $(grep "verdict: true" "$line" | tr ':' ' ' | awk '{print $1}' | head -n 1 | wc -l) -ne 0 ]]; then
+#                        echo "$line" >> "$file.trueverdict"
+#                    fi
 #                done
 #            fi
 #        done
+#
+## filter the TIMEOUTS for true verdicts -- these are the only ones, that we can even succeed with
+#       for file in "$tagname"-TIMEOUT-*.set; do
+#           if [[ -f "$file" ]]; then
+#               catname=$(echo "$file" | sed 's/.*-\(SV-COMP.*\)\.set/\1/')
+#               touch "$file.trueverdict"
+#               rm -rf "$file.trueverdict"
+#               echo "  $catname: $file"
+#               for line in $(cat "$file"); do
+#                   line="/home/goblint/sv-benchmarks/c/$line"
+#                   if [[ $(grep "verdict: true" "$line" | tr ':' ' ' | awk '{print $1}' | head -n 1 | wc -l) -ne 0 ]]; then
+#                       echo "$line" >> "$file.trueverdict"
+#                   fi
+#               done
+#           fi
+#       done
+
+
+# uncomment the following lines to print the runtime information for each category
+        for file in "$tagname"-TIMEOUT-*.set; do
+            if [[ -f "$file" ]]; then
+                catname=$(echo "$file" | sed 's/.*-\(SV-COMP.*\)\.set/\1/')
+                echo " extracting Escalationlevels for $catname: $file"
+                rm -rf "$file.escalationlevels"
+                for line in $(cat "$file"); do
+                    line=$(basename "$line")
+                    echo $(unzip  -p "$logfilearchive"  "$logfilearchiveprefix"/"$catname"."$line".log | grep "SV-COMP specification" | wc -l) >> "$file.escalationlevels"
+                done
+                echo " Escalationlevels for $catname: $file"
+                echo " - Level 1: $(cat "$file.escalationlevels" | grep 1 | wc -l )"
+                echo " - Level 2: $(cat "$file.escalationlevels" | grep 2 | wc -l )"
+                echo " - Level 3: $(cat "$file.escalationlevels" | grep 3 | wc -l )"
+                echo " - Level 4: $(cat "$file.escalationlevels" | grep 4 | wc -l )"
+                echo " - Level 5: $(cat "$file.escalationlevels" | grep 5 | wc -l )"
+                echo " - Level 6: $(cat "$file.escalationlevels" | grep 6 | wc -l )"
+                echo " - Level 7: $(cat "$file.escalationlevels" | grep 7 | wc -l )"
+                echo " - Level 8: $(cat "$file.escalationlevels" | grep 8 | wc -l )"
+            fi
+        done
     done
 
 }
