@@ -45,30 +45,38 @@ done
 # Enumerate before run.sh rebuilds/replaces the analyzer checkout. This also works
 # when the checkout is absent and run.sh needs to clone it first.
 # Paths are relative to the analyzer directory, as expected by Goblint.
+# Each entry pairs a config path with its pinned short analyzer commit hash.
 levels=(
-    conf/svcomp27/level00.json
-    conf/svcomp27/level01.json
-    conf/svcomp27/level02.json
-    conf/svcomp27/level03.json
-    conf/svcomp27/level04.json
-    conf/svcomp27/level05.json
+    "conf/svcomp27/level00.json  d4663fe"
+    "../level00-nounrolling.json d4663fe"
+    "conf/svcomp27/level01.json  d4663fe"
+    "conf/svcomp27/level02.json  d4663fe"
+    "../subpoly.json             0e1769d"
+ #configs may be commented out by a hash
+    "conf/svcomp27/level03.json  d4663fe"
+    "conf/svcomp27/level04.json  d4663fe"
+    "conf/svcomp27/level05.json  d4663fe"
+    "../level05-gasAndInit.json  d4663fe"
 )
 
 tmpdir=$(mktemp -d "${TMPDIR:-/tmp}/gobcron-levels.XXXXXX")
 trap 'rm -f "$tmpdir"/*.json; rmdir "$tmpdir"' EXIT
 
-for config in "${levels[@]}"; do
+for entry in "${levels[@]}"; do
+    read -r config commit <<< "$entry"
     level=$(basename "$config" .json)
     overlay="$tmpdir/$level.json"
-    jq -n --arg level "$level" --arg config "$config" '{instance: {
+    jq -n --arg level "$level" --arg config "$config" --arg commit "$commit" '{instance: {
+        commit: $commit,
         tag: ("svcomp27-" + $level),
         benchconf: ["conf/svcomp27/common.json", "conf/svcomp27/verify.json", $config],
         portfoliomode: false,
         timelimit: "900",
-        walltimelimit: "903"
+        walltimelimit: "903",
+	historysize: "20"
     }}' > "$overlay"
 
-    echo "=== $level ==="
+    echo "=== $level @ $commit ==="
     command=(bin/run.sh "${config_args[@]}" -c "$overlay" "${run_args[@]}")
     # run.sh handles --explain immediately, so it must come after all overrides.
     if "$explain"; then
