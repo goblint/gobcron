@@ -71,6 +71,7 @@ function whatwillhappen () {
     echo ""
 
     basedir="$(conf "instance.basedir")"
+    local analyzerpath; analyzerpath="$basedir/$(conf "instance.analyzerdir")"
     echo -e "current conf-file is: $CONFFILE           ... change with -c parameter"
     echo -e "basedir will be: $basedir"
     echo -e "tag will be: $(conf "instance.tag")"
@@ -80,6 +81,7 @@ function whatwillhappen () {
     portfoliomode=$(conf "instance.portfoliomode")
     if [ "$portfoliomode" == "true" ]; then
         confs="Portfolio: $(conf "instance.portfolio")"
+        echo -e "portfolio runner will be: $analyzerpath/goblint_runner.py (linked to scripts/sv-comp/goblint_runner.py)"
     else
         confs="Configs: $(confset "instance.benchconf" | jq -r 'map("<option name=\"--conf\">"+.+"</option> ") | add')"
     fi
@@ -88,6 +90,7 @@ function whatwillhappen () {
         --outputpath    $basedir/$(conf "instance.resultsdir")/current/ 
         --memorylimit   $(conf "server.memory") 
         --numOfThreads  $(conf "server.threads") 
+        --tool-directory $analyzerpath
         --timelimit     $(conf "instance.timelimit") 
         --walltimelimit $(conf "instance.walltimelimit") 
         --name          $(conf "instance.tag") 
@@ -134,6 +137,7 @@ function whatwillhappen () {
 function main () {
     #################################### start the actual program ###################################
     basedir="$(conf "instance.basedir")"
+    local analyzerpath; analyzerpath="$basedir/$(conf "instance.analyzerdir")"
     cd "$basedir"
 
     # skip if gobcron is already active
@@ -183,6 +187,20 @@ function main () {
         exit 1;
     fi
 
+    # Make the portfolio runner discoverable before rotating results.
+    portfoliomode=$(conf "instance.portfoliomode")
+    if [ "$portfoliomode" == "true" ]; then
+        local runner; runner="$analyzerpath/scripts/sv-comp/goblint_runner.py"
+        if [ ! -f "$runner" ] || [ ! -x "$runner" ]; then
+            echo "Error: portfolio runner $runner is missing or not executable" >&2
+            exit 1
+        fi
+        ln -sfT "$runner" "$analyzerpath/goblint_runner.py" || {
+            echo "Error: could not install portfolio runner symlink in $analyzerpath" >&2
+            exit 1
+        }
+    fi
+
     #from library.sh
     rotate
 
@@ -198,23 +216,21 @@ function main () {
 
     # relocate goblint-nightly.template.xml to the correct folder on this server
     rm -f "$basedir/run.xml"
-    portfoliomode=$(conf "instance.portfoliomode")
     if [ "$portfoliomode" == "true" ]; then
         confs="<option name=\"--portfolio-conf\">$(conf "instance.portfolio")</option>"
-        ln -sf "$basedir/analyzer/scripts/sv-comp/goblint_runner.py" "$basedir/analyzer"
     else
         confs="$(confset "instance.benchconf" | jq -r 'map("<option name=\"--conf\">"+.+"</option> ") | add')"
     fi
     cat "$basedir/conf/nightly-template.xml" | sed "s#SVBENCHMARKPREFIX#$(conf "instance.svbenchdir")#" | sed "s#SVBENCHMARKOPTIONS#$(conf "instance.options") $confs#" > "$basedir/run.xml"
 
     # perform the actual benchmark
-    cd "$basedir/$(conf "instance.analyzerdir")"
-    LD_LIBRARY_PATH="$basedir/$(conf "instance.analyzerdir")"/local/lib \
+    cd "$analyzerpath"
+    LD_LIBRARY_PATH="$analyzerpath"/local/lib \
     benchexec --read-only-dir / --overlay-dir . --overlay-dir /home \
         --outputpath     "$basedir/$(conf "instance.resultsdir")/current/" \
         --memorylimit    "$(conf "server.memory")" \
         --numOfThreads   "$(conf "server.threads")" \
-        --tool-directory "$basedir/$(conf "instance.analyzerdir")" \
+        --tool-directory "$analyzerpath" \
         --timelimit      "$(conf "instance.timelimit")" \
         --walltimelimit  "$(conf "instance.walltimelimit")" \
         --name           "$(conf "instance.tag")" \
