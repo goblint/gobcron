@@ -86,6 +86,7 @@ function whatwillhappen () {
         confs="Configs: $(confset "instance.benchconf" | jq -r 'map("<option name=\"--conf\">"+.+"</option> ") | add')"
     fi
     echo -e "$confs"
+    echo "Options: $(confset "instance.options" | jq -r '.[]')"
     benchexeccommand="\n  benchexec --read-only-dir / --overlay-dir . --overlay-dir /home 
         --outputpath    $basedir/$(conf "instance.resultsdir")/current/ 
         --memorylimit   $(conf "server.memory") 
@@ -221,7 +222,9 @@ function main () {
     else
         confs="$(confset "instance.benchconf" | jq -r 'map("<option name=\"--conf\">"+.+"</option> ") | add')"
     fi
-    cat "$basedir/conf/nightly-template.xml" | sed "s#SVBENCHMARKPREFIX#$(conf "instance.svbenchdir")#" | sed "s#SVBENCHMARKOPTIONS#$(conf "instance.options") $confs#" > "$basedir/run.xml"
+    # Preserve quotes in XML option attributes (conf strips them).
+    local options; options=$(confset "instance.options" | jq -r '.[]')
+    cat "$basedir/conf/nightly-template.xml" | sed "s#SVBENCHMARKPREFIX#$(conf "instance.svbenchdir")#" | sed "s#SVBENCHMARKOPTIONS#$options $confs#" > "$basedir/run.xml"
 
     # perform the actual benchmark
     cd "$analyzerpath"

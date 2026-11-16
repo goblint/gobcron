@@ -299,8 +299,13 @@ function scoring () {
     mv "$currentdir/$tag.table.csv" "$currentdir/$tag.table.tmp.csv"
     tail -n +4 "$currentdir/$tag.table.tmp.csv" > "$currentdir/$tag.table.csv"
     rm -f "$currentdir/$tag.table.tmp.csv"
-    #prepend header line to the csv
-    echo -e "ymlfile\tproperty\texpected\tverdict\tresult\tcputime\tmemory\tvarcount\tevalcount\tlevelstarted\tlevel" | cat - "$currentdir/$tag.table.csv" > "$currentdir/$tag.table.tmp.csv"
+    # Prepend header line, keeping the column order in sync with conf/tablegen.xml.
+    local header="ymlfile\tproperty\texpected\tverdict\tresult\tcputime\tmemory\tvarcount\tevalcount\tlevelstarted\tlevel"
+    header+="\tallocated_total_mb\theap_max_mb\tallocated_minor_mb\tallocated_major_mb\tallocated_promoted_mb"
+    header+="\tgc_minor_collections\tgc_major_collections\tgc_compactions"
+    header+="\tfrontc_cputime\tfrontc_walltime\tcabs2cil_cputime\tcabs2cil_walltime"
+    header+="\tcreatecfg_cputime\tcreatecfg_walltime\tsolving_cputime\tsolving_walltime\twitness_cputime\twitness_walltime"
+    echo -e "$header" | cat - "$currentdir/$tag.table.csv" > "$currentdir/$tag.table.tmp.csv"
     mv "$currentdir/$tag.table.tmp.csv" "$currentdir/$tag.table.csv"
     echo " generated results CSV $currentdir/$tag.table.csv"
     .venv/bin/python3 bin/computeweights.py \

@@ -15,10 +15,33 @@
     <column title="category"/>
     <column title="cputime" />
     <column title="memory" />
-    <column title="varcount">vars: (?P&lt;last&gt;\d+), evals: </column>
-    <column title="evalcount">vars: \d+, evals: (?P&lt;last&gt;\d+)</column>
+    <!-- Periodic statistics use colons; the final timing summary uses equals signs. -->
+    <column title="varcount">vars\s*[:=]\s*(?P&lt;last&gt;\d+)[,\s]+evals\s*[:=]</column>
+    <column title="evalcount">vars\s*[:=]\s*\d+[,\s]+evals\s*[:=]\s*(?P&lt;last&gt;\d+)</column>
     <column title="level-started">Starting config \[(?P&lt;last&gt;\d+)\]</column>
     <column title="level">Stopping portfolio sequence with verdict \[.*\] after config \[(\d+)\]</column>
+
+    <!-- Last GC snapshot: cumulative allocation volumes and peak major-heap size, in decimal MB. -->
+    <column title="allocated_total_mb" sourceUnit="MB" displayUnit="MB">Memory statistics: total=(?P&lt;last&gt;\d+(?:\.\d+)?)MB</column>
+    <column title="heap_max_mb" sourceUnit="MB" displayUnit="MB">Memory statistics:.*\bmax=(?P&lt;last&gt;\d+(?:\.\d+)?)MB</column>
+    <column title="allocated_minor_mb" sourceUnit="MB" displayUnit="MB">Memory statistics:.*\bminor=(?P&lt;last&gt;\d+(?:\.\d+)?)MB</column>
+    <column title="allocated_major_mb" sourceUnit="MB" displayUnit="MB">Memory statistics:.*\bmajor=(?P&lt;last&gt;\d+(?:\.\d+)?)MB</column>
+    <column title="allocated_promoted_mb" sourceUnit="MB" displayUnit="MB">Memory statistics:.*\bpromoted=(?P&lt;last&gt;\d+(?:\.\d+)?)MB</column>
+    <column title="gc_minor_collections">minor collections=(?P&lt;last&gt;\d+)</column>
+    <column title="gc_major_collections">major collections=(?P&lt;last&gt;\d+)</column>
+    <column title="gc_compactions">minor collections=.*\bcompactions=(?P&lt;last&gt;\d+)</column>
+
+    <!-- Last matching timing report. CPU and wall-clock times are inclusive and measured in seconds. -->
+    <column title="frontc_cputime" sourceUnit="s" displayUnit="s">^\s*FrontC\s+(?P&lt;last&gt;\d+(?:\.\d+)?)s</column>
+    <column title="frontc_walltime" sourceUnit="s" displayUnit="s">^\s*FrontC\s+\d+(?:\.\d+)?s\s+(?P&lt;last&gt;\d+(?:\.\d+)?)s</column>
+    <column title="cabs2cil_cputime" sourceUnit="s" displayUnit="s">^\s*Cabs2cil\s+(?P&lt;last&gt;\d+(?:\.\d+)?)s</column>
+    <column title="cabs2cil_walltime" sourceUnit="s" displayUnit="s">^\s*Cabs2cil\s+\d+(?:\.\d+)?s\s+(?P&lt;last&gt;\d+(?:\.\d+)?)s</column>
+    <column title="createcfg_cputime" sourceUnit="s" displayUnit="s">^\s*createCFG\s+(?P&lt;last&gt;\d+(?:\.\d+)?)s</column>
+    <column title="createcfg_walltime" sourceUnit="s" displayUnit="s">^\s*createCFG\s+\d+(?:\.\d+)?s\s+(?P&lt;last&gt;\d+(?:\.\d+)?)s</column>
+    <column title="solving_cputime" sourceUnit="s" displayUnit="s">^\s*solving\s+(?P&lt;last&gt;\d+(?:\.\d+)?)s</column>
+    <column title="solving_walltime" sourceUnit="s" displayUnit="s">^\s*solving\s+\d+(?:\.\d+)?s\s+(?P&lt;last&gt;\d+(?:\.\d+)?)s</column>
+    <column title="witness_cputime" sourceUnit="s" displayUnit="s">^\s*yaml witness\s+(?P&lt;last&gt;\d+(?:\.\d+)?)s</column>
+    <column title="witness_walltime" sourceUnit="s" displayUnit="s">^\s*yaml witness\s+\d+(?:\.\d+)?s\s+(?P&lt;last&gt;\d+(?:\.\d+)?)s</column>
 
   </union>
 

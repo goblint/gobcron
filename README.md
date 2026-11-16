@@ -195,7 +195,36 @@ available tags:
 myserver:/home/huber/gobcron$ bin/bigcomparison.sh -t tag1 -t tag2 -t tag3
 ```
 
+### Performance statistics
+
+`conf/tablegen.xml` extracts per-task performance statistics into
+`results/current/<tag>.table.csv`; these columns are also preserved in `finalscores.csv`:
+
+| Columns | Meaning |
+|---|---|
+| `cputime`, `memory` | BenchExec CPU time in seconds and peak process memory in bytes. |
+| `varcount`, `evalcount` | Last reported solver-variable and constraint-evaluation counts. |
+| `allocated_total_mb`, `allocated_minor_mb`, `allocated_major_mb`, `allocated_promoted_mb` | Cumulative OCaml allocation volumes, in decimal MB. Major allocations include promoted allocations; total avoids counting promotions twice. |
+| `heap_max_mb` | Peak OCaml major-heap size, in decimal MB. |
+| `gc_minor_collections`, `gc_major_collections`, `gc_compactions` | Last reported garbage-collection and compaction counts. |
+| `frontc_cputime`, `frontc_walltime` | C parsing times, in seconds. |
+| `cabs2cil_cputime`, `cabs2cil_walltime` | C-to-CIL conversion times, in seconds. |
+| `createcfg_cputime`, `createcfg_walltime` | Goblint CFG construction times, in seconds. |
+| `solving_cputime`, `solving_walltime` | Solver execution times, including nested postsolver work, in seconds. |
+| `witness_cputime`, `witness_walltime` | YAML witness generation and writing times, in seconds. |
+
+Timing is enabled by default through `instance.options`. If overriding this option,
+include `<option name="--enable">dbg.timing.enabled</option>` to retain phase timings.
+The timing measurements are inclusive; they do not separately attribute GC time.
+`createcfg_*` covers Goblint's CFG construction, not the earlier CIL-internal CFG
+preparation and loop unrolling.
+
+Heap/GC values come from periodic solver snapshots and may be absent for short runs
+or stop before the run finishes. Missing measurements remain empty, rather than zero.
+Extraction uses the last matching snapshot or timing region in the log; portfolio
+values are not summed across configurations, and a missing measurement in a later
+configuration can leave an earlier configuration's value.
+
 ## sending zulip messages from command line or scripts
 
 If you have configured your configration with a valid zulip bot, you may send messages to the zulip id of your choice via ```bin/zulip.sh [ID] "My message"```
-
