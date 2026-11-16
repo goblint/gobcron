@@ -142,10 +142,8 @@ categories=categories_data['categories']
 weightstable = []
 metacattable = []
 
-#iterate over all keys in categories and print them but not Category "JavaOverall"
-for metacategory in categories:
-    if metacategory in ["C.FalseOverall","C.TrueOverall","Java.Overall","C.Huawei-Concurrency-Challenges","SV-LIB.Overall","C.Overall","C.ValidationCrafted"]:
-        continue
+# Follow the official category hierarchy for the C true-overall score.
+for metacategory in categories["C.TrueOverall"]["categories"]:
     # retrieve the properties of the category
     properties = categories[metacategory].get('properties', [])
     categories_list = categories[metacategory].get('categories', [])
