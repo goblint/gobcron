@@ -1,0 +1,7 @@
+<?xml version="1.0"?>
+<table>
+  <column title="status"/>
+  <column title="category"/>
+  <column title="score"/>
+  <column title="cputime" sourceUnit="s" displayUnit="s"/>
+</table>
