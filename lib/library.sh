@@ -136,79 +136,9 @@ function compare_csv_to () {
 # compare two result folders and create a comparison table
 # parameters: $1=accumulator , $2=comparisondir1 , $3=comparisondir2
 function compareresults () {
-    function wrong () {
-        echo $(cat $1 | grep -o "Wrong}{}{Count}".* | sed 's/Wrong}{}{Count}{\(.*\)}%/\1/' )
-    }
-    function score () {
-        echo $(cat $1 | grep -o "Score}".* | sed 's/Score}{\(.*\)}%/\1/' )
-    }
-    function timing () {
-        echo $(cat $1 | grep -o "Cputime}{All}{}{Sum}{".* | sed 's/Cputime}{All}{}{Sum}{\(.*\)\..*}%/\1/' )
-    }
     local -n accu=$1
-    local comparison1;
-    local comparison2;
-    comparison1="$2"
-    comparison2="$3"
-    local current; current="$(cat "$comparison1"/commithash)";
-    local currenttag; currenttag="$(cat "$comparison1"/tag)";
-    local old; old="$(cat "$comparison2"/commithash)";
-    local oldtag; oldtag="$(cat "$comparison2"/tag)";
-    local gobcron; gobcron=$(mktemp -t gobcronXXXX)
-    local benchmarkname; benchmarkname=$(conf "instance.benchmark" | xargs -n1 basename -s .xml)
-    DEBUG echo "diffing commit $current with old $old"
-    accu="$gobcron"
-    echo "| Task | last: $oldtag / $old | current: $currenttag / $current | :red_triangle_up: score | difftable | #:siren: wrong verdicts | :hourglass: runtime" > "$gobcron"
-    echo "|---|---|---|---|---|---|---" >> "$gobcron"
-    DEBUG echo "using tmp file $gobcron"
-    #retrieve taskgroups
-    declare -a runsets=($(cat "$comparison1/"*results.txt| head -n 30 | grep "run sets:" | awk '{ $1=""; $2=""; print $0 }' | tr "," " "))
-    for taskgroup in "${runsets[@]}"
-    do
-	    DEBUG echo "trying  with taskgroup $taskgroup"
-	    local file; file=$(ls "$comparison1"/*"$taskgroup".xml.bz2)
-	    if [ ! -f "$file" ]; then continue; fi
-	    table-generator -q -n "$taskgroup" -o "$comparison1/diff2previous" "$file"
-	    table-generator -q -n "$taskgroup"-current -f statistics-tex -o "$comparison1/diff2previous" "$file"
-	    local currentscore=0 ;
-	    local oldscore=0 ;
-	    local diff=0 ;
-        local wrongcount=0 ;
-        local statsfile;
-        statsfile=$(echo "$comparison1/diff2previous"/*"$taskgroup"-current*.statistics.tex | head -n 1)
-        wrongcount=$(wrong "$statsfile" )
-        currentscore=$(score  "$statsfile" )
-        local currentruntime=0;
-        currentruntime=$(timing "$statsfile" )
-        local prettyruntime=0;
-        prettyruntime=$(printf "%03dh %02dm %02ds" $((currentruntime/3600)) $((currentruntime%3600/60)) $((currentruntime%60)))
-        # prettyruntime=$(printf "%02dh %02dm %02ds (%d seconds)" $((currentruntime/3600)) $((currentruntime%3600/60)) $((currentruntime%60)) $currentruntime)
-	    local compareto; compareto=$(ls "$comparison2"/*"$taskgroup".xml.bz2)
-	    if [ -f "$compareto" ]; then
-	        table-generator -q -n "$taskgroup" -o "$comparison1/diff2previous" "$file" "$compareto"
-	        table-generator -q -n "$taskgroup-old"     -f statistics-tex -o "$comparison1/diff2previous" "$compareto"
-	        local oldstatsfile;
-            oldstatsfile=$(echo   "$comparison1/diff2previous"/*"$taskgroup-old"*.statistics.tex | head -n 1 )
-            oldscore=$(score "$oldstatsfile" )
-            oldruntime=$(timing "$oldstatsfile" )
-	        ((currentscore)) || currentscore=0
-	        ((oldscore)) || oldscore=0
-	        diff="$((currentscore-oldscore))"
-            local timediff="$((currentruntime-oldruntime))"
-            prettyruntime="$prettyruntime  (:red_triangle_up: $(printf "%+dmins %+dsecs" $((timediff/60)) $((timediff%60)) ))"
-	    fi
-	    local line="";
-	    local difftablesize=0;
-	    difftablesize=$(cat "$comparison1/diff2previous"/"$taskgroup".diff.csv 2> /dev/null | tail -n +4 | wc -l)
-	    DEBUG echo "scores: $currentscore vs $oldscore"
-        taskgroup="${taskgroup#*_}"  # remove everything before _
-        taskgroup="${taskgroup%%.*}" # remove additional stuff after .
-	    [[ "$currentscore" -gt "$oldscore" ]] && line="| $taskgroup | $oldscore | $currentscore | :trophy: (+ $diff)  | $difftablesize | $wrongcount | $prettyruntime" ;
-	    [[ "$currentscore" -eq "$oldscore" ]] && line="| $taskgroup | $oldscore | $currentscore | :check_mark: (+/-0) | $difftablesize | $wrongcount | $prettyruntime" ;
-	    [[ "$currentscore" -lt "$oldscore" ]] && line="| $taskgroup | $oldscore | $currentscore | :warning: ($diff)   | $difftablesize | $wrongcount | $prettyruntime" ;
-	    echo "$line" >> "$gobcron"
-    done
-    rm -f "$comparison1"/diff2previous/*.tex
+    .venv/bin/python3 bin/compare_results.py "$2" "$3" || return 1
+    accu="$2/diff2previous/summary.md"
 }
 
 # search git log for noteworthy merges

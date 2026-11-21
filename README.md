@@ -195,6 +195,40 @@ available tags:
 myserver:/home/huber/gobcron$ bin/bigcomparison.sh -t tag1 -t tag2 -t tag3
 ```
 
+### Compare two runs by run set
+
+From the repository root, give the **current run first** and the **baseline second**:
+
+```bash
+# Generate the comparison and print the Markdown summary.
+bin/statistics.sh -f results/current -f results/old.1
+
+# Or generate the files directly, then read the summary when needed.
+.venv/bin/python3 bin/compare_results.py results/current results/old.1
+cat results/current/diff2previous/summary.md
+```
+
+[`bin/compare_results.py`](bin/compare_results.py) needs BenchExec's `table-generator` on `PATH`.
+Each existing input directory must contain `tag`, `commithash`, a BenchExec results text
+file with a `run sets:` header, and the corresponding `*.results.<name>.xml.bz2` files.
+Run definitions ending in `_demo` are skipped, including names with a task-block suffix
+such as `SV-COMP26_no-overflow_demo.C.no-overflow.Example`. On a first run, the Python
+helper accepts a baseline path that does not yet exist.
+
+The summary has one row per non-demo run set found on either side:
+
+| Column | Meaning |
+|---|---|
+| Last / current score and score change | Sum of BenchExec task scores for each run; change is current minus baseline. The weighted portfolio-level and metacategory scores are reported separately by `bin/compare_csv.py`. |
+| Changed tasks | Number of aligned task rows whose status differs. A reported status on one side and an absent task on the other also count as a change. |
+| Wrong verdicts | Number of current tasks BenchExec classified as `wrong`. |
+| CPU time | Sum of current task CPU times, with the signed difference from baseline when available. |
+
+An added or removed run set is labelled explicitly and has no delta. `N/A` means a
+value is unavailable, not zero. Detailed HTML and CSV tables are written alongside
+`summary.md`. BenchExec can omit the `.diff.*` tables when **none or all** of the
+statuses differ; use the summary's **Changed tasks** count to distinguish those cases.
+
 ### Performance statistics
 
 `conf/tablegen.xml` extracts per-task performance statistics into

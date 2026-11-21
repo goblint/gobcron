@@ -245,10 +245,13 @@ function main () {
 
     # compare the result to the previous one/ compareto
     #from library.sh
-    compareresults acc \
+    if compareresults acc \
         "$basedir/$(conf "instance.resultsdir")/current" \
-        "$basedir/$(conf "instance.resultsdir")/$(conf "instance.compareto")"
-    acc="$(cat "$acc")"
+        "$basedir/$(conf "instance.resultsdir")/$(conf "instance.compareto")"; then
+        printf -v acc '```spoiler Task comparison\n%s\n```' "$(<"$acc")"
+    else
+        acc="Run-set comparison unavailable; see the benchmark log."
+    fi
 
     #from library.sh
     runinfo rundata

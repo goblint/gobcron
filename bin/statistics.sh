@@ -57,16 +57,12 @@ function comparetags {
 
     compareresults acc \
         $(dirname $result1) \
-        $(dirname $result2)
-    acc="$(<$acc)"
-
-    echo "$acc"
+        $(dirname $result2) || return 1
+    cat "$acc"
 }
 
 function comparefolders {
-    local folders="$1"
-    local folder1=$(echo $folders | awk '{ print $1 }')
-    local folder2=$(echo $folders | awk '{ print $2 }')
+    local folder1="$1" folder2="$2"
 
     if [[ ! -d "$folder1" ]]; then
         echo "$folder1 is not a directory"
@@ -80,14 +76,10 @@ function comparefolders {
 
     DEBUG echo "comparing: $folder1 with $folder2"
 
-    exit 0
-
     compareresults acc \
         "$folder1" \
-        "$folder2"
-    acc="$(<$acc)"
-
-    echo "$acc"
+        "$folder2" || return 1
+    cat "$acc"
 }
 
 VALID_ARGS=$(getopt -o h,d,l,f:,t: --long help,debug,list,folder:,tag: -- "$@")
@@ -96,7 +88,7 @@ if [[ $? -ne 0 ]]; then
 fi
 
 TAGS=""
-FOLDERS=""
+FOLDERS=()
 
 eval set -- "$VALID_ARGS"
 while [ : ]; do
@@ -106,7 +98,7 @@ while [ : ]; do
         shift 2
         ;;
     -f | --folder)
-        FOLDERS="$FOLDERS $2"
+        FOLDERS+=("$2")
         shift 2
         ;;
     -d | --debug)
@@ -131,12 +123,12 @@ done
 
 if [[ ! -z "$TAGS" ]]; then
     comparetags "$TAGS"
-    exit 0
+    exit $?
 fi
 
-if [[ ! -z "$FOLDERS" ]]; then
-    comparefolders "$FOLDERS"
-    exit 0
+if (( ${#FOLDERS[@]} )); then
+    comparefolders "${FOLDERS[@]}"
+    exit $?
 fi
 
 echo "no tags specified"
